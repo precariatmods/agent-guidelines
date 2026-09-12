@@ -1,0 +1,6 @@
+interface:
+  display_name: "文学紙芝居制作"
+  short_description: "原典確認・脚色・音声・効果音・Remotionをつなぐ文学紙芝居制作フロー"
+  default_prompt: "Use $literary-kamishibai to create a new project from the bundled template and guide the literary kamishibai workflow."
+policy:
+  allow_implicit_invocation: true

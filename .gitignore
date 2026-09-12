@@ -1,0 +1,30 @@
+# 初回公開はVideoと公開案内だけを対象にする
+/*
+!/.gitignore
+!/README.md
+!/video/
+# 準備中・制作元
+/work/
+/study/
+/ChatGPT仕事入門/
+/python_simulation/
+/ai_knowledge-work/
+# 依存関係とローカル設定
+**/node_modules/
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.pyc
+**/.env
+**/.env.*
+!**/.env.example
+**/.DS_Store
+**/Thumbs.db
+# 個別作品と生成物（教材テンプレートは保持）
+/scenario/
+/video/**/scenario/projects/
+/video/*/output/
+/video/**/dist/
+/video/**/build/
+*.zip
+*.log

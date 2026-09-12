@@ -1,0 +1,14 @@
+{
+  "project_id": "__PROJECT_ID__",
+  "title": "__TITLE__",
+  "project_type": "public_domain_literary_kamishibai",
+  "master_format": "16:9_horizontal",
+  "source_language_for_production": "Japanese source text provided by user",
+  "cast_source": "story/voice_cast.json",
+  "dialogue_source": "input/dialogue.json",
+  "scenes_source": "input/scenes.json",
+  "image_prompts_source": "input/image_prompts.json",
+  "sfx_source": "input/sfx_cues.json",
+  "segment_assets_source": "input/remotion_segment_assets.json",
+  "render_only_when_explicitly_requested": true
+}

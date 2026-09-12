@@ -1,0 +1,4 @@
+character,voicevox_character,default_speaker_id,credit,notes
+ナレーター,里石ユカ,126,VOICEVOX:里石ユカ,汎用ナレーター。作品に合わせて変更する。
+主人公,__VOICEVOX_CHARACTER__,__SPEAKER_ID__,VOICEVOX:__VOICEVOX_CHARACTER__,作品ごとに確定する。
+相手役,__VOICEVOX_CHARACTER__,__SPEAKER_ID__,VOICEVOX:__VOICEVOX_CHARACTER__,作品ごとに確定する。

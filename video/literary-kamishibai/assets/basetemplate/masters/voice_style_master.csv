@@ -1,0 +1,8 @@
+voicevox_character,emotion,speaker_id,param_policy,style_name,notes
+里石ユカ,通常,126,none,つぼみ,汎用ナレーター基本
+里石ユカ,冷静,126,light,つぼみ,落ち着いた朗読
+里石ユカ,悲しみ,126,light,つぼみ,感情を入れすぎない
+里石ユカ,喜び,126,light,つぼみ,明るくしすぎない朗読
+里石ユカ,緊張,126,light,つぼみ,静かな緊張
+里石ユカ,温かい,126,light,つぼみ,結末の温かい語り
+里石ユカ,ささやき,126,light,つぼみ,静かに聞かせる語り
