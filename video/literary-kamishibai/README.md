@@ -42,7 +42,7 @@ video/literary-kamishibai/input.md、processing.md、instructions.md を読ん�
 
 ## 同梱物と初回に作成する処理
 
-同梱プログラムは `scripts/create_project.py` です。音声生成、入力検証、タイムライン作成、Remotion配置のプログラムは完成品として同梱していません。必要なものをCodexが作品内に作成・検証します。実際の動画完成までの別PC検証はこれから行います。
+作品作成は `scripts/create_project.py`、音声生成と音声タイムライン作成は `scripts/CreateVoice.py` と `scripts/Voice.py` を同梱しています。[音声生成の実行方法](scripts/README.md)を参照してください。音声生成には既存の同梱プログラムを使います。Remotion配置など不足する処理はCodexが作品内に作成・検証します。実際の動画完成までの別PC検証はこれから行います。
 
 ## スキルとして使う場合（任意）
 

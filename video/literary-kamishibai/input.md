@@ -13,6 +13,7 @@
 | input/sfx_cues.json | 効果音の配置。素材未提供の場合は空配列 |
 | masters/character_master.csv | 登場人物と音声の対応 |
 | masters/voice_style_master.csv | 話者・感情・VOICEVOXスタイルの対応 |
+| masters/emotion_master.csv | 同梱の感情パラメーター。音声生成時に必要 |
 | images/ | シーン画像。基本は横16:9 |
 
 これらは各作品フォルダ内の相対パスです。原本のひな形は `assets/basetemplate/` にあります。JSONの空配列は未入力であり、完成データではありません。
