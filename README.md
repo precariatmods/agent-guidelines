@@ -28,4 +28,4 @@ git clone https://github.com/precariatmods/agent-guidelines.git
 
 最初に教材のREADMEを読み、必要な環境と開始依頼を確認してください。Gitは必須ではありません。
 
-安全確認を希望する方は[動画教材の安全確認ガイド](video/literary-kamishibai/SECURITY.md)を参照してください。
+安全確認を希望する方は[はじめに確認すること](SECURITY.md)を参照してください。

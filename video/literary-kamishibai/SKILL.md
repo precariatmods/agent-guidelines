@@ -13,7 +13,7 @@ Turn a public-domain literary work into a reviewable illustrated-story project w
 2. If `scenario/README.md` exists, read it completely before acting. Treat it and the selected project's `story/local_rules.md` as higher priority than this portable skill.
 3. For a new project, read [references/workflow.md](references/workflow.md). For audio, sound effects, or Remotion, also read [references/local-tools.md](references/local-tools.md).
 
-`SECURITY.md` is an optional guide for users who ask to inspect a downloaded or updated copy of this skill. Read it only for a requested security review; it is not a required step in ordinary production work.
+The repository-level SECURITY.md is an optional first-use review note, not a runtime dependency. Users may remove their local copy after review. Do not require it or recreate it during ordinary production.
 
 ## Start a project
 
@@ -53,7 +53,7 @@ Before generating any image, present the consolidated scenario, character direct
 
 Treat silence and sound effects as authored timing data, not padding inside voice files. Keep `text` for subtitles/display and `reading` for VOICEVOX pronunciation. Generate audio only for the requested segment unless the user explicitly requests the whole work.
 
-Do not distribute, recommend, fetch, or execute private user-authored executables. In particular, never use `sol.exe` or its companion binaries. Python source helpers may be used after inspection. Use only the required tools named in the public README and direct users to their official distribution sources. Keep VOICEVOX Engine requests on `localhost` unless the user knowingly approves a specific remote endpoint after being told what text will be sent.
+Do not distribute, recommend, fetch, or execute private user-authored executables. Python source helpers may be used after inspection. Use only the required tools named in the public README and direct users to their official distribution sources. Keep VOICEVOX Engine requests on `localhost` unless the user knowingly approves a specific remote endpoint after being told what text will be sent.
 
 Use the exact stopping boundary in the request:
 

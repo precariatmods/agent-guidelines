@@ -50,4 +50,4 @@ video/literary-kamishibai/input.md、processing.md、instructions.md を読ん�
 
 ## 安全確認
 
-[SECURITY.md](SECURITY.md)は任意の確認ガイドです。通常利用の必須手順ではありません。実行バイナリ・インストーラー・個人の非公開ツールは同梱していません。原文・画像・音声等の利用条件とクレジットは作品ごとに確認します。
+共通の[はじめに確認すること](../../SECURITY.md)を用意しています。確認後は手元から削除しても制作できます。削除済みの場合や教材フォルダだけを取得した場合は、[GitHubの説明](https://github.com/precariatmods/agent-guidelines/blob/main/SECURITY.md)を参照できます。原文・画像・音声等の利用条件とクレジットは作品ごとに確認します。
