@@ -2,7 +2,15 @@
 
 `CreateVoice.py` は既存の `CreateScenarioVoice.py` を公開用に整理したものです。`Voice.py` と同じフォルダに置いて使います。Python 3.10以上の標準ライブラリだけで動き、pipでの追加導入は不要です。
 
-VOICEVOXを起動し、リポジトリ直下で実行します。
+まず、リポジトリ直下で入力だけ確認します。VOICEVOXの起動は不要です。
+
+```powershell
+python video/literary-kamishibai/scripts/CreateVoice.py scenario/projects/first_test --line line_001 --check
+```
+
+`CHECK OK` なら音声生成へ進めます。不備があれば `ERROR` と理由を表示し、終了コード1で停止します。成功時は終了コード0です。`--check` は通信・音声生成・出力ファイルの作成や変更をしません。台本、音声マスター、対象行、間の秒数を確認します。VOICEVOX接続や実際の話者の存在、画像、Remotionの確認は含みません。台本全体の不備も確認するため、未使用の仮データも修正してください。
+
+VOICEVOXを起動し、`--check` を外して実行します。
 
 ```powershell
 python video/literary-kamishibai/scripts/Voice.py speakers

@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import re
 import sys
 import wave
@@ -250,10 +251,23 @@ def validate_lines(
 ) -> None:
     errors: list[str] = []
     seen: set[str] = set()
-    if not dialogue:
-        raise ValueError("dialogue.json が空です。")
+    if not isinstance(dialogue, list) or not dialogue:
+        raise ValueError("dialogue.json は1件以上の行を持つ配列にしてください。")
 
     for line in dialogue:
+        if not isinstance(line, dict):
+            errors.append("dialogue.json の各行はオブジェクトにしてください。")
+            continue
+        for key in ("line_id", "scene_id", "type", "speaker", "emotion", "text", "reading"):
+            if not isinstance(line.get(key), str) or not line[key].strip():
+                errors.append(f"{key} は空でない文字列にしてください。")
+        for key in ("pause_before_sec", "pause_after_sec"):
+            try:
+                value = float(line.get(key, 0))
+                if not math.isfinite(value) or value < 0:
+                    raise ValueError
+            except (ValueError, TypeError):
+                errors.append(f"{line.get('line_id', '?')}: {key} は0以上の有限の秒数にしてください。")
         line_id = str(line.get("line_id", ""))
         speaker = str(line.get("speaker", ""))
         emotion = str(line.get("emotion", ""))
@@ -308,6 +322,7 @@ def run(
     engine_url: str,
     segment_id: str | None = None,
     line_ids: list[str] | None = None,
+    check_only: bool = False,
 ) -> None:
     if segment_id and not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", segment_id):
         raise ValueError("segment_id にパスは指定できません。")
@@ -332,6 +347,16 @@ def run(
     validate_lines([line_by_id[line_id] for line_id in line_order], character_master, voice_style_master, emotion_master)
     if not line_order:
         raise ValueError("音声生成対象がありません。")
+    # Resolve numeric parameters before any network request or output write.
+    for line_id in line_order:
+        voice = resolve_voice(line_by_id[line_id], character_master, voice_style_master, emotion_master)
+        if not all(math.isfinite(value) for value in voice["params"].values()):
+            raise ValueError(f"{line_id}: 音声パラメーターに非有限値があります。")
+    if check_only:
+        print(f"CHECK OK: 音声入力を確認しました。対象 {len(line_order)} 行")
+        print("通信・音声生成・出力ファイルの作成や変更は行っていません。")
+        print("VOICEVOXの接続・実際の話者・画像・Remotionはこの確認の対象外です。")
+        return
     request_json("GET", f"{engine_url.rstrip('/')}/version")
     voice_dir.mkdir(parents=True, exist_ok=True)
     metadata_dir.mkdir(parents=True, exist_ok=True)
@@ -461,6 +486,7 @@ def main() -> int:
         type=Path,
     )
     parser.add_argument("--engine-url", default=DEFAULT_ENGINE_URL)
+    parser.add_argument("--check", action="store_true", help="音声入力だけ確認する。通信・音声生成・ファイル出力は行わない。")
     parser.add_argument(
         "--segment",
         help="segment_001 のように指定すると、そのセグメントの音声とタイムラインだけを作る。",
@@ -474,7 +500,7 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        run(args.project_dir, args.engine_url, args.segment, args.line_ids)
+        run(args.project_dir, args.engine_url, args.segment, args.line_ids, check_only=args.check)
         return 0
     except (FileNotFoundError, KeyError, ValueError, VoicevoxError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)

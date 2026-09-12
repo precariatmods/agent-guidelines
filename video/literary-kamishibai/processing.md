@@ -4,7 +4,7 @@
 
 1. `scripts/create_project.py` で作品を新規作成する。同名作品は上書きしない。
 2. 入力を検証し、必要なら原文から台本・人物・画像案を作成する。
-3. 同梱の `scripts/CreateVoice.py` を実行し、確定したセリフをローカルVOICEVOXで音声化する。
+3. 同梱の `scripts/CreateVoice.py --check` で音声入力を確認し、成功後に `--check` を外して実行し、確定したセリフをローカルVOICEVOXで音声化する。
 4. WAV実尺、前後の間、画像、字幕、効果音からタイムラインを作成する。
 5. Remotionのソース、素材配置、compositionを作成する。
 6. 動画化を依頼された場合、指定segmentのMP4を生成する。
