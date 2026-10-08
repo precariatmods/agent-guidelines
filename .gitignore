@@ -1,15 +1,23 @@
-# 初回公開はVideoと公開案内だけを対象にする
+# 公開対象
 /*
 !/.gitignore
 !/README.md
+!/Output.md
 !/SECURITY.md
 !/video/
+!/meeting-minutes/
+!/learning-tools/
+
+# ローカル専用ルール
+/Localrule.md
+
 # 準備中・制作元
 /work/
 /study/
 /ChatGPT仕事入門/
 /python_simulation/
 /ai_knowledge-work/
+
 # 依存関係とローカル設定
 **/node_modules/
 **/.venv/
@@ -21,11 +29,20 @@
 !**/.env.example
 **/.DS_Store
 **/Thumbs.db
-# 個別作品と生成物（教材テンプレートは保持）
-/scenario/
+
+# 個別作品と生成物（教材テンプレート・ガイドラインは保持）
 /video/**/scenario/projects/
 /video/*/output/
 /video/**/dist/
 /video/**/build/
+/meeting-minutes/work/*.csv
+/meeting-minutes/work/*.json
+/meeting-minutes/work/*.txt
+/meeting-minutes/output/*
+/meeting-minutes/.cache/
+/meeting-minutes/.python-path
+/meeting-minutes/work/conn-inspect/
+/meeting-minutes/work/finalize-check/
+/meeting-minutes/work/template-check/
 *.zip
 *.log

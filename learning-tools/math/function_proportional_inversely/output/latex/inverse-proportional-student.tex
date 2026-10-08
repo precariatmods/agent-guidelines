@@ -1,0 +1,106 @@
+% Compile with upLaTeX and dvipdfmx. Source: input/student-sheet.md. Answers are not included.
+\documentclass[uplatex,dvipdfmx,a4paper,11pt,oneside,nomag]{jsarticle}
+\usepackage[top=17mm,bottom=18mm,left=19mm,right=19mm]{geometry}
+\usepackage{amsmath,amssymb,array,tabularx,xcolor}
+\definecolor{main}{HTML}{7A4524}
+\definecolor{sub}{HTML}{F8F0EA}
+\definecolor{line}{HTML}{C9A98E}
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.4mm}
+\newcommand{\titlebar}[1]{\vspace{1mm}{\Large\bfseries\color{main}#1}\par\vspace{1mm}\color{line}\hrule\color{black}\vspace{2mm}}
+\newcommand{\subbar}[1]{\vspace{1mm}\colorbox{sub}{\parbox{0.965\linewidth}{\bfseries\color{main}#1}}\par\vspace{1mm}}
+\newcommand{\answerline}[1][15mm]{\par\vspace{1mm}\fbox{\parbox[t][#1][t]{0.965\linewidth}{\hspace{1mm}}}\par}
+\newcommand{\q}[2]{\textbf{#1}\quad #2\par}
+\begin{document}
+
+\begin{center}
+  {\Huge\bfseries\color{main} 反比例}\\[1mm]
+  {\Large 一定の道のりを進む速さと時間から考える}\\[3mm]
+  教材ID：\texttt{inverse-proportional-travel}\quad 版：0.1
+\end{center}
+\vspace{1mm}
+\hfill 氏名\ \underline{\hspace{45mm}}\qquad 日付\ \underline{\hspace{27mm}}
+
+\titlebar{最初の問い}
+120 kmの道のりを、途中で速さを変えず、休憩せずに進みます。時速60 kmでは2時間かかります。まだ公式を作らずに、時速120 kmでは何時間、時速30 kmでは何時間かかると予想しますか。理由も説明してください。
+\answerline[25mm]
+
+\titlebar{覚える前提}
+\subbar{U1：反比例する二つの量}
+一方の量 $x$ が2倍、3倍、半分などになると、もう一方の量 $y$ が半分、3分の1、2倍など、\textbf{倍率の逆数}になる関係を反比例といいます。
+
+\subbar{U2：反比例の定数}
+反比例では積 $x\times y$ がいつも同じ値になります。この一定の値を $a$ とします。場面によって、$a$ は保たれている全体量を表します。
+
+速さ $x$ km/hと時間 $y$ 時間の積の単位はkmで、この教材では道のり120 kmを表します。
+
+\subbar{U3：反比例の式}
+反比例する二量の関係は
+\[
+  \boxed{xy=a}\qquad\text{または}\qquad\boxed{y=\frac{a}{x}}
+\]
+と表せます。0では割れないため $x=0$ は使いません。速さ0 km/hのままでは120 kmを進み終えません。
+
+\clearpage
+\titlebar{理解・応用の課題}
+一問ずつ考え、式だけでなく理由と単位も書きましょう。
+
+\q{U1}{速さが2倍、3倍、0.4倍になったとき、時間はそれぞれ何倍になりますか。}
+\answerline[13mm]
+\q{U2}{時速60 kmで2時間、時速30 kmで4時間について、速さと時間の積を求め、その数値の単位と意味を説明してください。}
+\answerline[17mm]
+\q{U3}{速さを $x$ km/h、時間を $y$ 時間として式を作ってください。}
+\answerline[13mm]
+\q{U4}{$x=20,30,40,60,80,120$ の表を作り、点をグラフに表すとどのように並ぶか説明してください。}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.55}
+\begin{tabular}{|>{\centering\arraybackslash}m{29mm}|*{6}{>{\centering\arraybackslash}m{17mm}|}}\hline
+$x$（km/h）&20&30&40&60&80&120\\ \hline
+$y$（時間）&&&&&&\\ \hline
+\end{tabular}
+\end{center}
+\answerline[12mm]
+\q{U5}{120 kmを1.5時間で進むための速さを求めてください。元の関係で検算してください。}
+\answerline[14mm]
+\q{U6}{「一方が増えると他方が減れば、どんな二量でも反比例である」という説明は正しいでしょうか。}
+\answerline[14mm]
+\q{U7}{途中で休憩したり速さを変えたりしても、速さと全体の所要時間はこの式で表せるでしょうか。}
+\answerline[16mm]
+
+\clearpage
+\titlebar{共通の考え方}
+\begin{enumerate}
+\item 何と何の関係を調べ、何が一定かを決め、単位を付ける。
+\item 一方が何倍のとき、他方がその逆数倍かを確かめる。
+\item $xy$ を求め、場面で保たれている全体量として意味を説明する。
+\item $xy=a$ または $y=a/x$ に表す。
+\item 表とグラフで対応する点を確認し、0を使えない理由を考える。
+\item 求めた値を元の場面へ戻し、単位と成立条件を確かめる。
+\end{enumerate}
+
+\titlebar{確認問題 1}
+\q{Q1}{120 kmを時速30 km、40 km、80 km、120 kmで進む時間を、倍率を使って求めてください。}
+\answerline[23mm]
+\q{Q2}{速さと時間の積が120になることを二つ以上の組で確かめ、120の単位と意味を説明してください。}
+\answerline[23mm]
+\q{Q3}{速さ $x$ km/h、時間 $y$ 時間の関係を二通りの式で表し、時速48 kmのときの時間を求めてください。}
+\answerline[23mm]
+\q{Q4}{120 kmを1.5時間で進むための速さを求め、積を使って検算してください。}
+\answerline[25mm]
+
+\clearpage
+\titlebar{確認問題 2}
+\q{Q5}{$(30,4)$、$(60,2)$、$(120,1)$が同じ反比例のグラフ上にある理由を、積と倍率の両方から説明してください。}
+\answerline[30mm]
+\q{Q6}{「速さが上がるほど所要時間が短くなる」だけで反比例と言い切れるでしょうか。判断に必要な条件を説明してください。}
+\answerline[31mm]
+\q{Q7}{120 kmを進む場面で、速さと時間が反比例するために必要な条件を挙げてください。また、速さ0 km/hを表に入れられない理由を、式と場面の両方から説明してください。}
+\answerline[38mm]
+
+\titlebar{人に説明する}
+反比例をまだ知らない人に、120 kmの移動を使って、反比例する二量、逆数倍、一定の積、$xy=a$、$y=a/x$、表、曲線のグラフ、0を使えない理由のつながりを説明してください。その後、比例との違いを倍率、一定になる量、式、グラフの観点から説明してください。
+\answerline[37mm]
+
+\end{document}

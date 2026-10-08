@@ -1,0 +1,4 @@
+faster-whisper==1.2.1
+pyannote.audio==4.0.7
+
+# Excelはテンプレートを単純コピーするため、Excel操作用パッケージは不要。

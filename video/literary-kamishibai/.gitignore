@@ -6,3 +6,10 @@ Thumbs.db
 bin/
 obj/
 node_modules/
+前のファイル/
+remotion/public/current/
+project/*/audio/*.wav
+project/*/images/*
+!project/*/images/.gitkeep
+project/*/output/*.mp4
+project/*/render_data.json

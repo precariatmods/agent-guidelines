@@ -1,0 +1,4 @@
+scene_id: scene_002
+output: images/scene_002.png
+
+主人公が登場する場面。横長16:9、紙芝居風、文字なし。

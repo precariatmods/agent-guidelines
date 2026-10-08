@@ -1,0 +1,4 @@
+scene_id: scene_001
+output: images/scene_001.png
+
+物語の導入場面。横長16:9、紙芝居風、文字なし。

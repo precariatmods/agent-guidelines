@@ -1,0 +1,223 @@
+<div id="circle-trig-demo">
+  <style>
+    #circle-trig-demo {
+      color-scheme:light dark;
+      --trig-ink:var(--foreground, CanvasText);
+      --trig-grid:var(--border, color-mix(in srgb, CanvasText 25%, Canvas 75%));
+      --trig-muted:var(--muted-foreground, GrayText);
+      --trig-sin:var(--viz-series-1, var(--blue, light-dark(#1768ac, #71b7ff)));
+      --trig-cos:var(--viz-series-2, var(--orange, light-dark(#b14a08, #ffb477)));
+      color:var(--trig-ink);
+    }
+    #circle-trig-demo .viz-controls,
+    #circle-trig-demo .viz-row { display:flex; flex-wrap:wrap; align-items:end; gap:.7rem; margin:.7rem 0; }
+    #circle-trig-demo .form-label { display:grid; gap:.25rem; font-size:.9rem; }
+    #circle-trig-demo .form-check { display:flex; align-items:center; gap:.35rem; min-height:2.25rem; }
+    #circle-trig-demo .form-select,
+    #circle-trig-demo .form-control,
+    #circle-trig-demo .btn { min-height:2.25rem; padding:.35rem .55rem; border:1px solid var(--trig-grid); border-radius:.4rem; background:var(--background, Canvas); color:var(--trig-ink); font:inherit; }
+    #circle-trig-demo .btn { cursor:pointer; }
+    #circle-trig-demo .btn-primary { font-weight:600; }
+    #circle-trig-demo .form-range { width:100%; }
+    #circle-trig-demo .tabular-nums { font-variant-numeric:tabular-nums; }
+    #circle-trig-demo .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    #circle-trig-demo .drawing { width:100%; display:block; }
+    #circle-trig-demo .drawing text { fill:var(--trig-ink); }
+    #circle-trig-demo .structure { fill:none; stroke:var(--trig-grid); stroke-width:1; }
+    #circle-trig-demo .circle-line { fill:none; stroke:var(--trig-ink); stroke-width:1.5; }
+    #circle-trig-demo .unit { fill:none; stroke:var(--trig-muted); stroke-width:1; stroke-dasharray:3 4; }
+    #circle-trig-demo .sin-line { fill:none; stroke:var(--trig-sin); stroke-width:2.5; }
+    #circle-trig-demo .cos-line { fill:none; stroke:var(--trig-cos); stroke-width:2.5; }
+    #circle-trig-demo .q7-line { fill:none; stroke:var(--viz-series-3, var(--purple, #7b5cc4)); stroke-width:2.5; }
+    #circle-trig-demo .sin-point { fill:var(--trig-sin); }
+    #circle-trig-demo .cos-point { fill:var(--trig-cos); }
+    #circle-trig-demo .q7-point { fill:var(--viz-series-3, var(--purple, #7b5cc4)); }
+    #circle-trig-demo .endpoint { fill:var(--background, Canvas); stroke:var(--trig-ink); stroke-width:1.5; }
+    #circle-trig-demo .endpoint.closed { fill:var(--trig-ink); }
+    #circle-trig-demo .circle-point { fill:var(--trig-ink); }
+    #circle-trig-demo .guide { fill:none; stroke:var(--trig-sin); stroke-width:1; stroke-dasharray:4 4; opacity:.6; }
+  </style>
+  <div class="viz-controls">
+    <label class="form-label">表示<select class="form-select" id="trig-mode"><option value="both">sin と cos</option><option value="sin">sin</option><option value="cos">cos</option><option value="q7">Q7：cosだけ</option></select></label>
+    <label class="form-label">係数（半径）<select class="form-select" id="trig-radius"><option value="0.5">0.5</option><option value="1" selected>1</option><option value="1.5">1.5</option><option value="2">2</option><option value="2.5">2.5</option><option value="3">3</option></select></label>
+    <label class="form-label">中の角の係数 a<select class="form-select" id="trig-angle-factor"><option value="0.3333333333333333">1/3</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option></select></label>
+    <label class="form-label">位相 b（度）<input class="form-control" id="trig-angle-shift" type="number" min="-720" max="720" step="1" value="0"></label>
+    <label class="form-label">θの開始（度）<input class="form-control" id="trig-start" type="number" min="-720" max="720" step="1" value="0"></label>
+    <label class="form-label">θの終了（度）<input class="form-control" id="trig-end" type="number" min="-720" max="720" step="1" value="360"></label>
+    <label class="form-check"><input class="form-check-input" id="trig-start-closed" type="checkbox" checked>開始を含む</label>
+    <label class="form-check"><input class="form-check-input" id="trig-end-closed" type="checkbox" checked>終了を含む</label>
+    <button class="btn" type="button" id="trig-apply-range">範囲を設定</button>
+  </div>
+  <svg class="drawing" role="img" aria-label="横軸のθを中の角φへ変換し、φを右向きの横軸から半径OPまで反時計回りに測る。円の縦の座標がsin、横の座標がcos。右のグラフはθの範囲で切り取った波を示す。"></svg>
+  <div class="viz-row tabular-nums" id="trig-mapping" aria-live="polite"></div>
+  <div class="viz-row tabular-nums"><label class="form-label" for="trig-angle">θ</label><output id="trig-angle-value">0°</output><span id="trig-values"></span></div>
+  <input class="form-range" id="trig-angle" type="range" min="0" max="360" step="1" value="0" aria-label="角度θ（度）">
+  <div class="viz-row"><button class="btn btn-primary" type="button" id="trig-play">再生</button><button class="btn" type="button" id="trig-clear">軌跡を消す</button></div>
+  <div class="sr-only" aria-live="polite" id="trig-announcement"></div>
+</div>
+<script>
+(() => {
+  const root=document.getElementById('circle-trig-demo');
+  const svg=root.querySelector('.drawing');
+  const slider=root.querySelector('#trig-angle');
+  const angleValue=root.querySelector('#trig-angle-value');
+  const values=root.querySelector('#trig-values');
+  const modeInput=root.querySelector('#trig-mode');
+  const radiusInput=root.querySelector('#trig-radius');
+  const factorInput=root.querySelector('#trig-angle-factor');
+  const shiftInput=root.querySelector('#trig-angle-shift');
+  const startInput=root.querySelector('#trig-start');
+  const endInput=root.querySelector('#trig-end');
+  const startClosedInput=root.querySelector('#trig-start-closed');
+  const endClosedInput=root.querySelector('#trig-end-closed');
+  const applyRange=root.querySelector('#trig-apply-range');
+  const play=root.querySelector('#trig-play');
+  const clear=root.querySelector('#trig-clear');
+  const announcement=root.querySelector('#trig-announcement');
+  const mapping=root.querySelector('#trig-mapping');
+  const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let startDegree=0, endDegree=360, startClosed=true, endClosed=true, degree=0, radius=1, factor=1, shift=0, mode='both', traceLow=0, traceHigh=0, playing=false, frame=0, lastTime=null;
+  const ns='http://www.w3.org/2000/svg';
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const fmt=x=>(Math.abs(x)<1e-9?0:x).toFixed(3);
+  function add(tag,attrs,text){const el=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))el.setAttribute(k,v);if(text!==undefined)el.textContent=text;svg.appendChild(el);return el;}
+  function line(x1,y1,x2,y2,cls){return add('line',{x1,y1,x2,y2,class:cls});}
+  function label(x,y,text,anchor='middle'){return add('text',{x,y,'text-anchor':anchor},text);}
+  const transformed=theta=>factor*theta+shift;
+  const middleAngle=theta=>transformed(theta)*Math.PI/180;
+  function factorText(){return Math.abs(factor-1/3)<1e-9?'θ/3':factor===1?'θ':factor+'θ';}
+  function phiText(){return 'φ = '+factorText()+(shift===0?'':shift>0?' + '+shift+'°':' − '+Math.abs(shift)+'°');}
+  function expression(kind){const phi=phiText().replace('φ = ','');return kind==='q7'?'2 − cos²φ − cosφ = 9/4 − (cosφ + 1/2)²':(radius===1?'':radius)+kind+'('+phi+')';}
+  function endpoint(x,y,closed){return add('circle',{cx:x,cy:y,r:4,class:'endpoint '+(closed?'closed':'')});}
+  function draw(){
+    const w=Math.max(280,root.getBoundingClientRect().width), stacked=w<540;
+    const limit=stacked?84:Math.min(105,w*.16), scale=limit/3;
+    const cx=stacked?w/2:limit+26, cy=154;
+    const gx=stacked?48:2*limit+92, gy=stacked?422:cy, end=w-24;
+    const totalHeight=stacked?572:310;
+    const activeRadius=mode==='q7'?1:radius,r=activeRadius*scale, angle=middleAngle(degree);
+    const sx=activeRadius*Math.cos(angle), sy=activeRadius*Math.sin(angle);
+    const px=cx+scale*sx, py=cy-scale*sy, qx=gx+(end-gx)*(degree-startDegree)/(endDegree-startDegree);
+    const q7Visible=mode==='q7',sinVisible=mode!=='cos'&&!q7Visible,cosVisible=mode!=='sin';
+    svg.setAttribute('viewBox','0 0 '+w+' '+totalHeight);svg.replaceChildren();
+    label(cx,24,'円 · 半径 '+activeRadius);
+    label(cx,45,phiText()+' = '+Math.round(transformed(degree))+'°');
+    label((gx+end)/2,stacked?298:24,mode==='both'?expression('sin')+' / '+expression('cos'):expression(mode));
+    line(cx-limit-10,cy,cx+limit+10,cy,'structure');line(cx,cy-limit-10,cx,cy+limit+10,'structure');
+    if(activeRadius!==1)add('circle',{cx,cy,r:scale,class:'unit'});
+    add('circle',{cx,cy,r,class:'circle-line','data-radius':radius});
+    for(const n of [-3,-2,-1,1,2,3]){line(cx+n*scale,cy-3,cx+n*scale,cy+3,'structure');line(cx-3,cy-n*scale,cx+3,cy-n*scale,'structure');}
+    label(cx+limit+10,cy+21,'x');label(cx+13,cy-limit-8,'y');
+    line(cx,cy,px,py,'circle-line');
+    line(cx,cy,cx+limit,cy,'circle-line');
+    label(cx+limit+7,cy-8,'0°','start');
+    label(cx-9,cy+18,'O');
+    const arcRadius=Math.max(8,Math.min(26,r*.55));
+    if(degree>startDegree){
+      const startAngle=middleAngle(startDegree),steps=Math.max(2,Math.ceil(Math.abs(transformed(degree)-transformed(startDegree))/3));let arc='';
+      for(let i=0;i<=steps;i++){const a=startAngle+(angle-startAngle)*i/steps;arc+=(i?'L':'M')+(cx+arcRadius*Math.cos(a))+','+(cy-arcRadius*Math.sin(a));}
+      add('path',{d:arc,class:'circle-line','data-angle-arc':degree});
+      if(degree>=20){
+        const ex=cx+arcRadius*Math.cos(angle),ey=cy-arcRadius*Math.sin(angle);
+        const tx=-Math.sin(angle),ty=-Math.cos(angle);
+        line(ex,ey,ex-5*tx+2.5*ty,ey-5*ty-2.5*tx,'circle-line');
+        line(ex,ey,ex-5*tx-2.5*ty,ey-5*ty+2.5*tx,'circle-line');
+      }
+      if(degree-startDegree>=25)label(cx+(arcRadius+13)*Math.cos((startAngle+angle)/2),cy-(arcRadius+13)*Math.sin((startAngle+angle)/2)+4,'φ');
+    }
+    const startAngle=middleAngle(startDegree),endAngle=middleAngle(endDegree);
+    endpoint(cx+r*Math.cos(startAngle),cy-r*Math.sin(startAngle),startClosed);
+    endpoint(cx+r*Math.cos(endAngle),cy-r*Math.sin(endAngle),endClosed);
+    if(cosVisible)line(cx,cy,px,cy,'cos-line');
+    if(sinVisible)line(px,cy,px,py,'sin-line');
+    add('circle',{cx:px,cy:py,r:4.5,class:'circle-point'});
+    label(px+(Math.cos(angle)>=0?10:-10),py+(Math.sin(angle)>=0?-10:18),'P',Math.cos(angle)>=0?'start':'end');
+    const legendY=stacked?266:289;
+    if(sinVisible){line(cx-82,legendY-5,cx-68,legendY-5,'sin-line');label(cx-62,legendY,'sin：縦','start');}
+    if(cosVisible){line(cx+9,legendY-5,cx+23,legendY-5,'cos-line');label(cx+29,legendY,'cos：横','start');}
+    if(q7Visible){line(cx-82,legendY+15,cx-68,legendY+15,'q7-line');label(cx-62,legendY+20,'y：Q7の値','start');}
+    line(gx,gy-limit-10,gx,gy+limit+10,'structure');line(gx,gy,end,gy,'structure');
+    for(const n of [-3,-2,-1,0,1,2,3]){const y=gy-n*scale;line(gx-3,y,end,y,'structure');label(gx-9,y+4,String(n),'end');}
+    const ticks=[[startDegree,startDegree+'°'],[(startDegree+endDegree)/2,Math.round((startDegree+endDegree)/2)+'°'],[endDegree,endDegree+'°']];
+    for(const [deg,t] of ticks){const x=gx+(end-gx)*(deg-startDegree)/(endDegree-startDegree);line(x,gy-4,x,gy+4,'structure');label(x,gy+limit+24,t,deg===startDegree?'start':deg===endDegree?'end':'middle');}
+    label((gx+end)/2,gy+limit+46,'θ（度）');
+    function trace(kind,fn){
+      const count=Math.max(1,Math.ceil((traceHigh-traceLow)*2));let d='';
+      for(let i=0;i<=count;i++){const deg=traceLow+(traceHigh-traceLow)*i/count;const value=kind==='q7'?fn(middleAngle(deg)):activeRadius*fn(middleAngle(deg));d+=(i?'L':'M')+(gx+(end-gx)*(deg-startDegree)/(endDegree-startDegree)).toFixed(3)+','+(gy-scale*value).toFixed(3);}
+      add('path',{d,class:kind+'-line','data-trace':kind});
+      const y=gy-scale*(kind==='q7'?fn(angle):activeRadius*fn(angle));
+      if(kind==='sin')add('circle',{cx:qx,cy:y,r:5,class:'sin-point','data-point':kind});
+      else if(kind==='cos')add('rect',{x:qx-4,y:y-4,width:8,height:8,class:'cos-point','data-point':kind});
+      else add('circle',{cx:qx,cy:y,r:5,class:'q7-point','data-point':kind});
+    }
+    if(sinVisible){trace('sin',Math.sin);if(!stacked)line(px,py,qx,py,'guide');}
+    if(cosVisible)trace('cos',Math.cos);
+    if(q7Visible)trace('q7',a=>2-Math.cos(a)**2-Math.cos(a));
+    function graphEndpoints(kind,fn){
+      for(const [deg,closed] of [[startDegree,startClosed],[endDegree,endClosed]]){
+        const value=kind==='q7'?fn(middleAngle(deg)):activeRadius*fn(middleAngle(deg));
+        endpoint(gx+(end-gx)*(deg-startDegree)/(endDegree-startDegree),gy-scale*value,closed);
+      }
+    }
+    if(sinVisible)graphEndpoints('sin',Math.sin);
+    if(cosVisible)graphEndpoints('cos',Math.cos);
+    if(q7Visible)graphEndpoints('q7',a=>2-Math.cos(a)**2-Math.cos(a));
+    slider.min=startDegree;slider.max=endDegree;slider.value=degree;angleValue.textContent=Math.round(degree)+'°';
+    values.textContent=q7Visible?'y = '+fmt(2-Math.cos(angle)**2-Math.cos(angle)):[sinVisible?expression('sin')+' = '+fmt(sy):'',cosVisible?expression('cos')+' = '+fmt(sx):''].filter(Boolean).join('　');
+    const phiStart=transformed(startDegree),phiEnd=transformed(endDegree);
+    mapping.textContent='θの範囲：'+startDegree+'° 〜 '+endDegree+'°　→　'+phiText()+' の範囲：'+phiStart+'° 〜 '+phiEnd+'°';
+    modeInput.value=mode;radiusInput.value=radius;radiusInput.disabled=q7Visible;factorInput.value=factor;factorInput.disabled=q7Visible;shiftInput.value=shift;shiftInput.disabled=q7Visible;startInput.value=startDegree;endInput.value=endDegree;startClosedInput.checked=startClosed;endClosedInput.checked=endClosed;
+    play.textContent=playing?'一時停止':reduced.matches?'30°進める':degree>=endDegree?'もう一度再生':'再生';
+    play.setAttribute('aria-pressed',String(playing));
+  }
+  function persist(){if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{angleDegrees:degree,coefficient:radius,angleFactor:factor,angleShift:shift,function:mode,startDegrees:startDegree,endDegrees:endDegree,startClosed,endClosed},privateContent:{traceLow,traceHigh}}).catch(()=>{});}
+  function announce(){announcement.textContent=angleValue.textContent+'、'+values.textContent;}
+  function stop(){playing=false;cancelAnimationFrame(frame);lastTime=null;}
+  function move(next){degree=clamp(next,startDegree,endDegree);traceLow=Math.min(traceLow,degree);traceHigh=Math.max(traceHigh,degree);draw();}
+  function tick(time){
+    if(!playing)return;
+    if(!root.isConnected){stop();return;}
+    const delta=lastTime===null?0:Math.min(time-lastTime,80);lastTime=time;
+    move(degree+delta*.035);
+    if(degree>=endDegree){stop();draw();announce();persist();}else frame=requestAnimationFrame(tick);
+  }
+  slider.addEventListener('input',()=>{stop();move(Number(slider.value));});
+  slider.addEventListener('change',()=>{announce();persist();});
+  modeInput.addEventListener('change',()=>{stop();mode=modeInput.value;if(mode==='q7'){radius=1;factor=1;shift=0;}draw();announce();persist();});
+  radiusInput.addEventListener('change',()=>{stop();radius=Number(radiusInput.value);draw();announce();persist();});
+  factorInput.addEventListener('change',()=>{stop();factor=Number(factorInput.value);traceLow=degree;traceHigh=degree;draw();announce();persist();});
+  shiftInput.addEventListener('change',()=>{const next=Number(shiftInput.value);if(!Number.isFinite(next)||next<-720||next>720){announcement.textContent='位相 b は−720°から720°の範囲で設定してください。';return;}stop();shift=next;traceLow=degree;traceHigh=degree;draw();announce();persist();});
+  applyRange.addEventListener('click',()=>{
+    const nextStart=Number(startInput.value),nextEnd=Number(endInput.value);
+    if(!Number.isFinite(nextStart)||!Number.isFinite(nextEnd)||nextStart<-720||nextEnd>720||nextStart>=nextEnd){announcement.textContent='開始角は終了角より小さく、−720°から720°の範囲で設定してください。';return;}
+    stop();startDegree=nextStart;endDegree=nextEnd;startClosed=startClosedInput.checked;endClosed=endClosedInput.checked;degree=startDegree;traceLow=startDegree;traceHigh=startDegree;draw();announce();persist();
+  });
+  clear.addEventListener('click',()=>{stop();traceLow=degree;traceHigh=degree;draw();persist();});
+  play.addEventListener('click',()=>{
+    if(playing){stop();draw();announce();persist();return;}
+    if(degree>=endDegree){degree=startDegree;traceLow=startDegree;traceHigh=startDegree;}
+    if(reduced.matches){move(degree+30);announce();persist();return;}
+    playing=true;lastTime=null;draw();frame=requestAnimationFrame(tick);
+  });
+  function restore(state){
+    stop();const m=state?.modelContent,p=state?.privateContent;
+    if(Number.isFinite(m?.startDegrees)&&Number.isFinite(m?.endDegrees)&&m.startDegrees>=-720&&m.endDegrees<=720&&m.startDegrees<m.endDegrees){startDegree=m.startDegrees;endDegree=m.endDegrees;}
+    if(typeof m?.startClosed==='boolean')startClosed=m.startClosed;
+    if(typeof m?.endClosed==='boolean')endClosed=m.endClosed;
+    if(Number.isFinite(m?.angleDegrees))degree=clamp(m.angleDegrees,startDegree,endDegree);
+    if([.5,1,1.5,2,2.5,3].includes(m?.coefficient))radius=m.coefficient;
+    if([1/3,1,2,3].some(value=>Math.abs(value-m?.angleFactor)<1e-9))factor=m.angleFactor;
+    if(Number.isFinite(m?.angleShift)&&m.angleShift>=-720&&m.angleShift<=720)shift=m.angleShift;
+    if(['sin','cos','both','q7'].includes(m?.function))mode=m.function;
+    if(mode==='q7'){radius=1;factor=1;shift=0;}
+    traceLow=Number.isFinite(p?.traceLow)?clamp(p.traceLow,startDegree,degree):startDegree;
+    traceHigh=Number.isFinite(p?.traceHigh)?clamp(p.traceHigh,degree,endDegree):degree;
+    draw();
+  }
+  window.addEventListener('openai:set_globals',event=>{if(event.detail?.globals?.widgetState)restore(event.detail.globals.widgetState);});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing){stop();draw();persist();}});
+  reduced.addEventListener('change',()=>{stop();draw();});
+  new ResizeObserver(draw).observe(root);
+  restore(window.openai?.widgetState);
+})();
+</script>

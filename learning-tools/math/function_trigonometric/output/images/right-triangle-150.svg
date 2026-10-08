@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560" role="img" aria-labelledby="title desc">
+  <title id="title">150度の第2象限の直角三角形</title>
+  <desc id="desc">150度の基準角は30度。第2象限なので横の座標cosは負、縦の座標sinは正。sin 150度は2分の1、cos 150度はマイナスルート3分の2。</desc>
+  <rect width="800" height="560" fill="white"/>
+  <g font-family="Yu Gothic,Meiryo,sans-serif" fill="#202a35">
+    <text x="400" y="54" text-anchor="middle" font-size="30" font-weight="bold">150°：基準角30°、第2象限</text>
+    <path d="M 600 430 H 160 L 160 176 Z" fill="#f2f7fc" stroke="#202a35" stroke-width="4"/>
+    <path d="M 194 430 V 396 H 160" fill="none" stroke="#526170" stroke-width="3"/>
+    <path d="M 528 430 A 72 72 0 0 0 538 394" fill="none" stroke="#7043a0" stroke-width="3"/>
+    <text x="490" y="408" fill="#7043a0" font-size="27">30°</text>
+    <text x="380" y="465" text-anchor="middle" fill="#bc5715" font-size="29">横の大きさ　√3</text>
+    <text x="195" y="311" fill="#1768ac" font-size="29">縦の大きさ　1</text>
+    <text x="455" y="278" transform="rotate(30 455 278)" fill="#202a35" font-size="29">斜辺　2</text>
+    <text x="400" y="520" text-anchor="middle" font-size="26">第2象限では 横は負・縦は正　sin 150° = 1/2　　cos 150° = −√3/2</text>
+  </g>
+</svg>

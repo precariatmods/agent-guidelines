@@ -1,0 +1,16 @@
+[
+  {
+    "line_id": "001",
+    "scene_id": "scene_001",
+    "image": "images/scene_001.png",
+    "character": "語り手",
+    "text": "ここに最初のセリフを記載します。"
+  },
+  {
+    "line_id": "002",
+    "scene_id": "scene_002",
+    "image": "images/scene_002.png",
+    "character": "主人公",
+    "text": "ここに主人公のセリフを記載します。"
+  }
+]

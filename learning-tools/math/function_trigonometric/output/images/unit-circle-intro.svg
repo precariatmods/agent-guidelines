@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="720" viewBox="0 0 1000 720" role="img" aria-labelledby="title desc">
+  <title id="title">θの場所と、単位円の横・縦の座標</title>
+  <desc id="desc">θは中心Oで右向きの横軸から半径OPへ反時計回りに測る角。半径は1。横の座標はcos θ、縦の座標はsin θ。</desc>
+  <rect width="1000" height="720" fill="white"/>
+  <g font-family="Yu Gothic,Meiryo,sans-serif" fill="#202a35">
+    <text x="500" y="62" text-anchor="middle" font-size="30" font-weight="bold">まず、θがどこの角度か見てみよう</text>
+    <path d="M 110 365 H 744 M 400 635 V 100" fill="none" stroke="#b9c2cb" stroke-width="2"/>
+    <path d="M 733 359 L 745 365 L 733 371 M 394 112 L 400 100 L 406 112" fill="none" stroke="#b9c2cb" stroke-width="2"/>
+    <circle cx="400" cy="365" r="240" fill="none" stroke="#526170" stroke-width="2.5"/>
+    <path d="M 400 365 L 470 365 A 70 70 0 0 0 449.497 315.503 Z" fill="#f0e7ff"/>
+    <path d="M 400 365 L 569.706 195.294" fill="none" stroke="#202a35" stroke-width="3"/>
+    <path d="M 400 365 H 569.706" stroke="#bc5715" stroke-width="5"/>
+    <path d="M 569.706 365 V 195.294" stroke="#1768ac" stroke-width="5"/>
+    <path d="M 555.706 365 V 351 H 569.706" fill="none" stroke="#8795a3" stroke-width="1.5"/>
+    <path d="M 470 365 A 70 70 0 0 0 449.497 315.503" fill="none" stroke="#7043a0" stroke-width="3"/>
+    <path d="M 451 325 L 449.497 315.503 L 459 317" fill="none" stroke="#7043a0" stroke-width="3"/>
+    <text x="487" y="338" font-family="Georgia,serif" font-style="italic" fill="#7043a0" font-size="38">θ</text>
+    <circle cx="400" cy="365" r="4" fill="#202a35"/>
+    <circle cx="569.706" cy="195.294" r="6" fill="#202a35"/>
+    <text x="379" y="393" font-family="Georgia,serif" font-size="24">O</text>
+    <text x="584" y="186" font-family="Georgia,serif" font-size="28">P</text>
+    <text x="443" y="241" text-anchor="middle" font-size="26">半径 1</text>
+    <text x="485" y="409" text-anchor="middle" font-size="25" fill="#bc5715">横：cos θ</text>
+    <text x="598" y="287" font-size="25" fill="#1768ac">縦：sin θ</text>
+    <text x="654" y="352" font-size="23">0°</text>
+    <text x="758" y="374" font-size="23">横軸</text>
+    <text x="417" y="113" font-size="23">縦軸</text>
+    <text x="500" y="672" text-anchor="middle" font-size="25">θ：右向きの横軸から、半径 OP までの角度</text>
+  </g>
+</svg>

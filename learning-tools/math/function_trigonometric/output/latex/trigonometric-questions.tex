@@ -1,0 +1,46 @@
+% Compile with LuaLaTeX. Source: input/student-sheet.md, Q1-Q7.
+% Output locations are defined in ../../Output.md.
+\documentclass[a4paper,11pt]{ltjsarticle}
+\usepackage[top=20mm,bottom=20mm,left=23mm,right=23mm]{geometry}
+\usepackage{amsmath,amssymb}
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2mm}
+\setlength{\abovedisplayskip}{3mm}
+\setlength{\belowdisplayskip}{3mm}
+\begin{document}
+\begin{center}
+  {\LARGE\bfseries 三角関数\quad 確認問題}\\[2mm]
+  {\normalsize $\sin$・$\cos$ の方程式と最大・最小}
+\end{center}
+\vspace{3mm}
+\hfill 氏名\ \underline{\hspace{48mm}}\qquad 日付\ \underline{\hspace{27mm}}
+\vspace{4mm}
+
+角度はラジアンで表す。途中式や、中の角の範囲も示すこと。
+
+\section*{1\quad 方程式}
+次の方程式について、指定された範囲内の $\theta$ をすべて求めよ。
+\begin{list}{}{\setlength{\leftmargin}{14mm}\setlength{\itemsep}{8mm}\setlength{\topsep}{3mm}}
+  \item[\textbf{Q1.}] $\displaystyle 2\cos(3\theta)=1
+    \qquad\left(0\leq\theta<\pi\right)$
+  \item[\textbf{Q2.}] $\displaystyle \sin(2\theta)=\frac{\sqrt{3}}{2}
+    \qquad\left(0\leq\theta<\pi\right)$
+  \item[\textbf{Q3.}] $\displaystyle 2\cos\left(\frac{\theta}{3}\right)=\sqrt{3}
+    \qquad\left(\frac{\pi}{2}\leq\theta<\pi\right)$
+  \item[\textbf{Q4.}] $\displaystyle 2\cos\left(3\theta-\frac{\pi}{6}\right)=-1
+    \qquad\left(0\leq\theta\leq\frac{\pi}{2}\right)$
+\end{list}
+
+\vspace{3mm}
+\section*{2\quad 最大・最小}
+次の関数の最大値と最小値、およびそれぞれの値をとる $\theta$ をすべて求めよ。
+\begin{list}{}{\setlength{\leftmargin}{14mm}\setlength{\itemsep}{10mm}\setlength{\topsep}{4mm}}
+  \item[\textbf{Q5.}] $\displaystyle y=\sin\left(\theta+\frac{\pi}{4}\right)
+    \qquad\left(0\leq\theta\leq\frac{\pi}{2}\right)$
+  \item[\textbf{Q6.}] $\displaystyle y=2\cos\left(2\theta+\frac{\pi}{6}\right)
+    \qquad\left(0\leq\theta\leq\frac{\pi}{4}\right)$
+  \item[\textbf{Q7.}] $\displaystyle y=\sin^2\theta-\cos\theta+1
+    \qquad\left(0\leq\theta\leq2\pi\right)$
+\end{list}
+\end{document}

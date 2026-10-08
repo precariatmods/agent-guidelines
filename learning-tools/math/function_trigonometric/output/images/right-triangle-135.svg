@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560" role="img" aria-labelledby="title desc">
+  <title id="title">135度の第2象限の直角三角形</title>
+  <desc id="desc">135度の基準角は45度。第2象限なので横の座標cosは負、縦の座標sinは正。sin 135度はルート2分の1、cos 135度はマイナスルート2分の1。</desc>
+  <rect width="800" height="560" fill="white"/>
+  <g font-family="Yu Gothic,Meiryo,sans-serif" fill="#202a35">
+    <text x="400" y="54" text-anchor="middle" font-size="30" font-weight="bold">135°：基準角45°、第2象限</text>
+    <path d="M 590 430 H 310 L 310 150 Z" fill="#f2f7fc" stroke="#202a35" stroke-width="4"/>
+    <path d="M 344 430 V 396 H 310" fill="none" stroke="#526170" stroke-width="3"/>
+    <path d="M 518 430 A 72 72 0 0 0 539 379" fill="none" stroke="#7043a0" stroke-width="3"/>
+    <text x="496" y="393" fill="#7043a0" font-size="27">45°</text>
+    <text x="450" y="465" text-anchor="middle" fill="#bc5715" font-size="29">横の大きさ　1</text>
+    <text x="160" y="300" fill="#1768ac" font-size="29">縦の大きさ　1</text>
+    <text x="455" y="270" transform="rotate(45 455 270)" fill="#202a35" font-size="29">斜辺　√2</text>
+    <text x="400" y="520" text-anchor="middle" font-size="26">第2象限では 横は負・縦は正　sin 135° = √2/2　　cos 135° = −√2/2</text>
+  </g>
+</svg>

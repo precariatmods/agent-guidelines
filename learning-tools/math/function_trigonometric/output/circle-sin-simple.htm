@@ -1,0 +1,96 @@
+<div id="circle-sin-simple">
+  <style>
+    #circle-sin-simple {
+      color-scheme:light dark;
+      --simple-ink:var(--foreground, CanvasText);
+      --simple-grid:var(--border, color-mix(in srgb, CanvasText 25%, Canvas 75%));
+      --simple-muted:var(--muted-foreground, GrayText);
+      --simple-sin:var(--viz-series-1, var(--blue, light-dark(#1768ac, #71b7ff)));
+      --simple-cos:var(--viz-series-2, var(--orange, light-dark(#b14a08, #ffb477)));
+      color:var(--simple-ink);
+    }
+    #circle-sin-simple .drawing { width:100%; display:block; }
+    #circle-sin-simple .drawing text { fill:var(--simple-ink); }
+    #circle-sin-simple .structure { fill:none; stroke:var(--simple-grid); stroke-width:1.5; }
+    #circle-sin-simple .circle-line { fill:none; stroke:var(--simple-ink); stroke-width:2; }
+    #circle-sin-simple .angle-line { fill:none; stroke:var(--simple-muted); stroke-width:2; }
+    #circle-sin-simple .sin-line { fill:none; stroke:var(--simple-sin); stroke-width:5; }
+    #circle-sin-simple .cos-line { fill:none; stroke:var(--simple-cos); stroke-width:5; }
+    #circle-sin-simple .drawing .sin-label { fill:var(--simple-sin); }
+    #circle-sin-simple .drawing .cos-label { fill:var(--simple-cos); }
+    #circle-sin-simple .point { fill:var(--simple-ink); }
+  </style>
+  <div class="viz-controls">
+    <label class="form-label" for="simple-angle">角度 θ（0°〜180°）
+      <input class="form-control" id="simple-angle" type="number" min="0" max="180" step="1" value="30" inputmode="decimal">
+    </label>
+  </div>
+  <svg class="drawing" role="img" aria-labelledby="simple-title simple-desc">
+    <title id="simple-title">角度を入力してsinとcosを確認する単位円</title>
+    <desc id="simple-desc">単位円上の点Pについて、横の座標をcos、縦の座標をsinとして色分けして表示する。</desc>
+  </svg>
+  <div class="viz-row tabular-nums" aria-live="polite">
+    <output id="simple-values"></output>
+  </div>
+  <div class="sr-only" id="simple-error" role="alert"></div>
+</div>
+<script>
+(() => {
+  const root=document.getElementById('circle-sin-simple');
+  const input=root.querySelector('#simple-angle');
+  const svg=root.querySelector('.drawing');
+  const values=root.querySelector('#simple-values');
+  const error=root.querySelector('#simple-error');
+  const ns='http://www.w3.org/2000/svg';
+  const exact=new Map([
+    [0,['0','1']],[30,['1/2','√3/2']],[45,['√2/2','√2/2']],
+    [60,['√3/2','1/2']],[90,['1','0']],[120,['√3/2','−1/2']],
+    [135,['√2/2','−√2/2']],[150,['1/2','−√3/2']],[180,['0','−1']]
+  ]);
+  let degree=30;
+  function add(tag,attrs,text){const el=document.createElementNS(ns,tag);for(const [key,value] of Object.entries(attrs))el.setAttribute(key,value);if(text!==undefined)el.textContent=text;svg.appendChild(el);return el;}
+  function line(x1,y1,x2,y2,cls){return add('line',{x1,y1,x2,y2,class:cls});}
+  function label(x,y,text,anchor='middle',cls=''){return add('text',{x,y,'text-anchor':anchor,class:cls},text);}
+  function format(value){return (Math.abs(value)<1e-10?0:value).toFixed(3);}
+  function draw(){
+    const width=Math.max(320,root.getBoundingClientRect().width);
+    const height=440,cx=width/2,cy=225,r=Math.min(155,width*.31);
+    const angle=degree*Math.PI/180;
+    const cos=Math.cos(angle),sin=Math.sin(angle);
+    const px=cx+r*cos,py=cy-r*sin;
+    svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+    svg.replaceChildren();
+    add('title',{id:'simple-title'},'角度を入力してsinとcosを確認する単位円');
+    add('desc',{id:'simple-desc'},'単位円上の点Pについて、横の座標をcos、縦の座標をsinとして色分けして表示する。');
+    label(cx,28,`θ = ${degree}°`);
+    line(cx-r-28,cy,cx+r+28,cy,'structure');
+    line(cx,cy+r+22,cx,cy-r-28,'structure');
+    add('circle',{cx,cy,r,class:'circle-line'});
+    line(cx,cy,px,py,'angle-line');
+    line(cx,cy,px,cy,'cos-line');
+    line(px,cy,px,py,'sin-line');
+    add('circle',{cx:px,cy:py,r:6,class:'point'});
+    label(cx-10,cy+20,'O','end');
+    label(px+(cos>=0?12:-12),py-10,'P',cos>=0?'start':'end');
+    label(cx+r+12,cy+22,'0°','start');
+    label(cx-r-12,cy+22,'180°','end');
+    label(cx+10,cy-r-8,'90°','start');
+    const cosMid=(cx+px)/2;
+    label(cosMid,cy+44,'cos θ：横','middle','cos-label');
+    if(Math.abs(sin)<1e-10)label(cx+12,cy-12,'sin θ：縦','start','sin-label');
+    else label(px+(cos>=0?14:-14),(cy+py)/2,'sin θ：縦',cos>=0?'start':'end','sin-label');
+    const known=exact.get(degree);
+    const sinText=known?known[0]:format(sin),cosText=known?known[1]:format(cos);
+    values.textContent=`sin ${degree}° = ${sinText}　　cos ${degree}° = ${cosText}`;
+    svg.setAttribute('aria-label',`θは${degree}度。sinは縦で${sinText}、cosは横で${cosText}。`);
+  }
+  function update(){
+    const next=Number(input.value);
+    if(!Number.isFinite(next)||next<0||next>180){error.textContent='角度は0°から180°までで入力してください。';return;}
+    error.textContent='';degree=next;draw();
+  }
+  input.addEventListener('input',update);
+  new ResizeObserver(draw).observe(root);
+  draw();
+})();
+</script>

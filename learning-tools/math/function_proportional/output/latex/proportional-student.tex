@@ -1,0 +1,106 @@
+% Compile with upLaTeX and dvipdfmx. Source: input/student-sheet.md. Answers are not included.
+\documentclass[uplatex,dvipdfmx,a4paper,11pt,oneside,nomag]{jsarticle}
+\usepackage[top=17mm,bottom=18mm,left=19mm,right=19mm]{geometry}
+\usepackage{amsmath,amssymb,array,tabularx,xcolor}
+\definecolor{main}{HTML}{245A7A}
+\definecolor{sub}{HTML}{EAF3F8}
+\definecolor{line}{HTML}{9CB7C8}
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.4mm}
+\newcommand{\titlebar}[1]{\vspace{1mm}{\Large\bfseries\color{main}#1}\par\vspace{1mm}\color{line}\hrule\color{black}\vspace{2mm}}
+\newcommand{\subbar}[1]{\vspace{1mm}\colorbox{sub}{\parbox{0.965\linewidth}{\bfseries\color{main}#1}}\par\vspace{1mm}}
+\newcommand{\answerline}[1][15mm]{\par\vspace{1mm}\fbox{\parbox[t][#1][t]{0.965\linewidth}{\hspace{1mm}}}\par}
+\newcommand{\q}[2]{\textbf{#1}\quad #2\par}
+\begin{document}
+
+\begin{center}
+  {\Huge\bfseries\color{main} 比例}\\[1mm]
+  {\Large 針金の長さと重さから考える}\\[3mm]
+  教材ID：\texttt{proportional-wire}\quad 版：0.1
+\end{center}
+\vspace{1mm}
+\hfill 氏名\ \underline{\hspace{45mm}}\qquad 日付\ \underline{\hspace{27mm}}
+
+\titlebar{最初の問い}
+同じ材質・同じ太さの針金2.5 mの重さは60 gでした。まだ計算式を作らずに、長さを5 mにすると重さはどうなると予想しますか。1.25 mではどうでしょうか。理由も説明してください。
+\answerline[25mm]
+
+\titlebar{覚える前提}
+\subbar{U1：比例する二つの量}
+一方の量 $x$ が2倍、3倍、半分などになると、もう一方の量 $y$ も\textbf{同じ倍率}になる関係を比例といいます。
+
+\subbar{U2：比例定数}
+$x\neq0$ のとき、比例では商 $y\div x$ がいつも同じ値になります。この一定の値を比例定数 $a$ といい、「$x$が1あたりの$y$」を表します。
+
+針金の長さを $x$ m、針金だけの重さを $y$ gとすると、比例定数の単位は $\mathrm{g/m}$ です。
+
+\subbar{U3：比例の式}
+比例する二量の関係は
+\[
+  \boxed{y=ax}
+\]
+と表せます。$x=0$ なら $y=0$ です。
+
+\clearpage
+\titlebar{理解・応用の課題}
+一問ずつ考え、式だけでなく理由と単位も書きましょう。
+
+\q{U1}{長さが2倍、3倍、0.4倍になったとき、重さはそれぞれ何倍になりますか。}
+\answerline[13mm]
+\q{U2}{2.5 mで60 gの針金は、1 mあたり何gですか。その数値の単位と意味も説明してください。}
+\answerline[17mm]
+\q{U3}{長さを $x$ m、針金だけの重さを $y$ gとして式を作ってください。}
+\answerline[13mm]
+\q{U4}{$x=0,1,2.5,5,18$ の表を作り、点をグラフに表すとどのように並ぶか説明してください。}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.55}
+\begin{tabular}{|>{\centering\arraybackslash}m{25mm}|*{5}{>{\centering\arraybackslash}m{20mm}|}}\hline
+$x$（m）&0&1&2.5&5&18\\ \hline
+$y$（g）&&&&&\\ \hline
+\end{tabular}
+\end{center}
+\answerline[12mm]
+\q{U5}{針金が300 gのときの長さを求めてください。どの式を逆向きに使ったかも説明してください。}
+\answerline[14mm]
+\q{U6}{「量が増えれば、どんな二量でも比例である」という説明は正しいでしょうか。}
+\answerline[14mm]
+\q{U7}{空の容器35 gに針金を載せます。長さと、はかりに表示される容器込みの重さは比例するでしょうか。}
+\answerline[16mm]
+
+\clearpage
+\titlebar{共通の考え方}
+\begin{enumerate}
+\item 何と何の関係を調べるかを決め、単位を付ける。
+\item 一方が何倍のとき、他方も同じ倍率かを確かめる。
+\item $y\div x$ を求め、1あたりの量として意味を説明する。
+\item $y=ax$ に表す。
+\item 表とグラフで、対応する点と原点を確認する。
+\item 求めた値を元の場面へ戻し、単位と条件を確かめる。
+\end{enumerate}
+
+\titlebar{確認問題 1}
+\q{Q1}{同じ針金5 m、7.5 m、0.5 mの重さを、倍率を使って求めてください。}
+\answerline[23mm]
+\q{Q2}{2.5 mで60 gから比例定数を求め、単位と「1あたり」の意味を説明してください。}
+\answerline[23mm]
+\q{Q3}{長さ $x$ m、針金だけの重さ $y$ gの関係を式にし、18 mの重さを求めてください。}
+\answerline[23mm]
+\q{Q4}{同じ針金が300 gあります。長さを求め、計算を元の式で確かめてください。}
+\answerline[25mm]
+
+\clearpage
+\titlebar{確認問題 2}
+\q{Q5}{$(0,0)$、$(2.5,60)$、$(5,120)$が比例のグラフ上にある理由を、式と倍率の両方から説明してください。}
+\answerline[30mm]
+\q{Q6}{針金が長いほど値段が高くなる店で、「長さと値段は比例する」と直ちに言ってよいでしょうか。判断に必要な条件を説明してください。}
+\answerline[31mm]
+\q{Q7}{2.5 mで60 gの針金を18 m用意します。空の容器35 gを使うと、はかりの表示は何gになればよいですか。また、長さと針金だけの重さ、長さと容器込みの表示のうち、どちらが比例するか理由付きで説明してください。}
+\answerline[38mm]
+
+\titlebar{人に説明する}
+比例をまだ知らない人に、針金の例を使って、比例する二量、同じ倍率、1あたりの量、比例定数、$y=ax$、表、原点を通るグラフのつながりを説明してください。その後Q7を説明し、「量が増える」だけでは比例と判断できない理由も付け加えてください。
+\answerline[37mm]
+
+\end{document}

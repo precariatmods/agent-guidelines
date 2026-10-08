@@ -1,56 +1,110 @@
-# 文学紙芝居：動画制作の教育用サンプル
+# 文学紙芝居・最小動画サンプル
 
-材料・処理内容・進め方の3ファイルを使って、文学紙芝居の制作を組み立てる教材です。自分の作品に合わせて方針を書き換えて使います。完成済みの動画生成アプリではなく、Codexが必要な処理を作成・検証しながら進める構成です。
+貼り付けたストーリーから、静止画像、VOICEVOX音声、字幕による約5分の紙芝居動画を作る最小サンプルです。
 
-## 最初に読むファイル
+## PolicyとSkill
 
-1. [input.md](input.md)：原文・台本・画像などの材料
-2. [processing.md](processing.md)：処理内容と完成条件
-3. [instructions.md](instructions.md)：進め方と停止条件
+このサンプルでは、AIエージェントへの指示を「Policy」と「Skill」に明示的に分けています。
 
-解説動画：準備中。
-
-## 前提環境
-
-- ローカルの作業フォルダを扱えるCodex
-- Python 3.10以上、VOICEVOX、Node.js・npm
-- VS Code（教材で使う編集環境）とChatGPTアプリ（台本の準備に使用）
-- 動画工程にはRemotionのプロジェクトと依存関係が必要です。Node.jsがあるだけでは準備完了ではありません。
-- ffmpegは複数動画の結合が必要な場合に用意します。
-
-未導入のものがあれば、Codexに「インストール方法を教えて」と依頼してください。導入済みのものを確認し、不足する準備だけを順に案内します。
-
-VOICEVOXは利用者が起動します。Remotionの構成がない場合はCodexがソースと設定を作成します。外部依存関係のインストールは自動で行わず、必要な準備を案内します。
-
-## 別PCで始める
-
-1. リポジトリをZIPまたはGitで取得して展開する。
-2. 展開したリポジトリをCodexの作業フォルダとして開く。
-3. ChatGPTで原文・台本・画像を準備する場合、方針ファイルをプロジェクトへ登録する操作と、成果物のダウンロードは利用者が行う。相互参照する資料も必要に応じて渡す。
-4. 以下の開始依頼で、まず環境と入力を確認する。
-5. 最初は画像1枚・セリフ1つ程度で音声と配置を確認し、問題がなければ動画化を依頼する。
+- [POLICY.md](POLICY.md)：制作方針、判断基準、制約の正本
+- [SKILL.md](SKILL.md)：Policyに従い、使用するファイル、プログラム、処理順を定める実行手順の正本
 
 ```text
-video/literary-kamishibai/input.md、processing.md、instructions.md を読んでください。
-このリポジトリをworkspace rootとして、project_idをfirst_test、作品名を「動作確認」にします。
-まず利用可能なPython・Node.js・npm・VOICEVOXとRemotionの準備状況を確認し、
-不足する素材と必要な準備を報告してください。外部ソフトの導入や更新は行わないでください。
-新規プロジェクトを作成し、画像1枚・セリフ1つの試験に必要な入力案まで準備してください。
-音声生成・画像生成・MP4レンダリングはまだ行わないでください。
+POLICY.md
+  ↓ 方針・判断
+SKILL.md
+  ↓ 実行手順
+scripts / Remotion
+  ↓ 処理
+project/
+  ↓
+MP4
 ```
 
-入力を確認した後は「first_testのsegment_001を音声作成まで」「Remotion配置まで」「動画化してください」のように範囲を指定します。
+READMEは全体像と利用者向けの入口です。制作判断は`POLICY.md`、エージェントの具体的な処理順は`SKILL.md`を参照してください。
 
-作品は `scenario/projects/<project_id>/` に作ります。共通テンプレートを直接書き換えず、作品固有の方針は生成された `story/local_rules.md` に記載します。同名の作品が既にある場合は上書きせず、既存作品の続行か別IDでの新規作成を選びます。
+## 必要なプログラム
 
-## 同梱物と初回に作成する処理
+- Python 3.10以上
+- Node.jsとnpm
+- Remotion（`remotion/`でnpmから導入）
+- VOICEVOX Engine（利用者が起動）
 
-作品作成は `scripts/create_project.py`、音声生成と音声タイムライン作成は `scripts/CreateVoice.py` と `scripts/Voice.py` を同梱しています。[音声生成の実行方法](scripts/README.md)を参照してください。音声生成には既存の同梱プログラムを使います。Remotion配置など不足する処理はCodexが作品内に作成・検証します。実際の動画完成までの別PC検証はこれから行います。
+制作前に確認します。
 
-## スキルとして使う場合（任意）
+```powershell
+python scripts/check_environment.py
+```
 
-この `literary-kamishibai` フォルダだけをスキルとして配置するための `SKILL.md` も残しています。通常の教材利用ではインストールせず、上の開始依頼でファイルを明示して読み込めます。
+Remotionがない場合だけ、初回導入用の絶対パスとコマンドが表示されます。導入後は再インストールを促しません。不足する環境がある場合、制作は開始しません。また、このサンプルは外部ソフトを自動インストールしません。
 
-## 安全確認
+## フォルダ
 
-共通の[はじめに確認すること](../../SECURITY.md)を用意しています。確認後は手元から削除しても制作できます。削除済みの場合や教材フォルダだけを取得した場合は、[GitHubの説明](https://github.com/precariatmods/agent-guidelines/blob/main/SECURITY.md)を参照できます。原文・画像・音声等の利用条件とクレジットは作品ごとに確認します。
+```text
+literary-kamishibai/
+├─ POLICY.md
+├─ SKILL.md
+├─ README.md
+├─ scripts/                 共通Pythonプログラム
+├─ remotion/                全シナリオ共通のRemotion環境
+├─ project/
+│  └─ 002/                  シナリオ単位のフォルダ
+│     ├─ dialogue.json
+│     ├─ voicevox_characters.csv
+│     ├─ image_order/       AI向けの画像指示書
+│     ├─ images/            生成画像
+│     ├─ audio/             VOICEVOX音声
+│     ├─ render_data.json   自動生成される中間データ
+│     └─ output/            完成MP4
+└─ 前のファイル/            比較用の旧版（変更しない）
+```
+
+`dialogue.json`、`voicevox_characters.csv`、`image_order/`、`images/`が入力です。`audio/*.wav`、`render_data.json`、`output/video.mp4`は処理による生成物です。`render_data.json`は手作業で編集しません。
+
+## 入力例
+
+`dialogue.json`は記載順が再生順です。
+
+```json
+[
+  {
+    "line_id": "001",
+    "scene_id": "scene_001",
+    "image": "images/scene_001.png",
+    "character": "語り手",
+    "text": "物語が始まりました。"
+  }
+]
+```
+
+`line_id`は重複させず、先頭のゼロを保つため文字列にします。音声は`audio/001.wav`のように保存されます。同じ場面で同じ画像を使う場合は、同じ`scene_id`と`image`を指定します。
+
+`voicevox_characters.csv`は3列だけです。
+
+```csv
+シナリオ登場キャラ名,VoiceVOXキャラ名,VoiceVOXキャラID
+語り手,四国めたん,2
+```
+
+## 利用者向け実行例
+
+VOICEVOX Engineを起動し、音声を作ります。
+
+```powershell
+python scripts/create_voice.py project/002
+```
+
+素材を検査し、すべて揃っている場合だけ共通Remotionへ配置します。
+
+```powershell
+python scripts/prepare_remotion.py project/002
+```
+
+Remotionが未導入の場合だけ、`check_environment.py`が表示した共通`remotion/`フォルダで`npm install`を実行します。その後、同フォルダで確認またはレンダリングします。
+
+```powershell
+npm run studio
+npm run render -- ../project/002/output/video.mp4
+```
+
+表示は静止画像、話者名、字幕のみです。各セリフの後に固定1秒を空け、最後のセリフ後には追加しません。詳しい処理順は`SKILL.md`を参照してください。

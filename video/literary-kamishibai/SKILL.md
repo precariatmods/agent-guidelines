@@ -1,69 +1,70 @@
 ---
 name: literary-kamishibai
-description: Create and continue public-domain literary kamishibai projects from source verification and adaptation through image planning, VOICEVOX audio, sound effects, and Remotion video. Use when starting from the bundled basetemplate, organizing drafts in sozai, consulting on a story, or producing a named segment. Do not use for unrelated short-form drama writing.
+description: Create a simple literary kamishibai video from a supplied story using scene images, VOICEVOX speech, subtitles, and the bundled Remotion workflow. Use for projects under this sample; do not add advanced production features unless requested.
 ---
 
 # Literary Kamishibai
 
-Turn a public-domain literary work into a reviewable illustrated-story project while preserving the source's language, relationships, and ending.
+Read [POLICY.md](POLICY.md) first and follow it as the source of truth for production decisions and constraints.
 
-## Resolve local context
+## Workflow
 
-1. Find the workspace root.
-2. If `scenario/README.md` exists, read it completely before acting. Treat it and the selected project's `story/local_rules.md` as higher priority than this portable skill.
-3. For a new project, read [references/workflow.md](references/workflow.md). For audio, sound effects, or Remotion, also read [references/local-tools.md](references/local-tools.md).
+1. Identify the target `project/<project_id>/`. If it already contains work, do not overwrite it without the user's direction.
+2. Run the environment check from the production root:
 
-The repository-level SECURITY.md is an optional first-use review note, not a runtime dependency. Users may remove their local copy after review. Do not require it or recreate it during ordinary production.
+   ```powershell
+   python scripts/check_environment.py
+   ```
 
-## Start a project
+   Stop when a required environment is unavailable. Do not install external software automatically. Remotion is installed once in the shared `remotion/` directory; follow the command printed by the check only when it is missing.
+3. Turn the supplied story into a script of approximately five minutes.
+4. Write `dialogue.json` in playback order. Each entry must contain `line_id`, `scene_id`, `image`, `character`, and `text`. Keep `line_id` unique and use it as the WAV basename.
+5. Write `voicevox_characters.csv` with exactly these columns: `シナリオ登場キャラ名`, `VoiceVOXキャラ名`, `VoiceVOXキャラID`.
+6. Write one numbered instruction file per scene under `image_order/`. Include its `scene_id`, destination below `images/`, and the visual instruction.
+7. Generate the requested scene images only when the user asks for image generation, and save each image at the path specified by its instruction file.
+8. Confirm that VOICEVOX Engine is running, then generate speech from `text` without emotion, pitch, speed, or reading overrides:
 
-Use the bundled `assets/basetemplate/`; do not modify that source template for an individual work.
+   ```powershell
+   python scripts/create_voice.py project/002
+   ```
 
-Run `scripts/create_project.py` with a workspace root, safe project ID, and title. It must create:
+   Replace `002` with the target project ID.
+9. Validate the JSON, CSV, images, and WAV files and prepare the shared Remotion runtime:
 
-```text
-<workspace>/scenario/projects/<project_id>/
-```
+   ```powershell
+   python scripts/prepare_remotion.py project/002
+   ```
 
-The helper refuses to overwrite an existing destination, fills `job.json`, and can place a supplied original-text file or brief into `sozai/`. If the user has already supplied source notes, casting ideas, scene ideas, dialogue, image notes, or reference images, put what is known into matching paths under `sozai/`. Mark unknowns as unresolved; do not invent bibliographic facts.
+   Continue only when validation succeeds. This command generates `render_data.json` and places the current project under `remotion/public/current/`. Treat `render_data.json` as generated intermediate data; do not edit it directly.
+10. When visual confirmation is useful, open the shared Remotion Studio:
 
-After creation, rename references to `basetemplate` conceptually to the new project ID. Keep `sozai/` as the draft intake area until the user approves promotion into `source/`, `story/`, `input/`, `images/`, or `character_images/`.
+    ```powershell
+    cd remotion
+    npm run studio
+    ```
 
-## Consult and adapt
+11. Render an MP4 only when the user requests it:
 
-Work in small, reviewable decisions rather than generating the whole production at once:
+    ```powershell
+    cd remotion
+    npm run render -- ../project/002/output/video.mp4
+    ```
 
-```text
-source and rights
-→ passages worth preserving
-→ characters and relationships
-→ emotional arc
-→ scenes
-→ dialogue and narration
-→ sound effects and pauses
-→ estimated timing
-→ image prompts
-```
+    Replace `002` with the target project ID.
 
-Preserve literary phrasing in narration when it carries rhythm, metaphor, irony, or aftertaste. Convert metaphors into concrete visual evidence before writing image prompts. Remove narration that merely repeats what the image communicates.
+## Sources of truth
 
-Before generating any image, present the consolidated scenario, character direction, and image plan for final user confirmation. After approval, explain the impact before accepting a major story, cast, or visual-direction change.
+Inputs:
 
-## Produce audio and video
+- `dialogue.json`
+- `voicevox_characters.csv`
+- `image_order/`
+- `images/`
 
-Treat silence and sound effects as authored timing data, not padding inside voice files. Keep `text` for subtitles/display and `reading` for VOICEVOX pronunciation. Generate audio only for the requested segment unless the user explicitly requests the whole work.
+Generated artifacts:
 
-Do not distribute, recommend, fetch, or execute private user-authored executables. Python source helpers may be used after inspection. Use only the required tools named in the public README and direct users to their official distribution sources. Keep VOICEVOX Engine requests on `localhost` unless the user knowingly approves a specific remote endpoint after being told what text will be sent.
+- `audio/*.wav`
+- `render_data.json`
+- `output/video.mp4`
 
-Use the exact stopping boundary in the request:
-
-- `segment_001 作成`: prepare only that segment and its missing assets.
-- `segment_001 音声作成`: create only its voice files and timing data.
-- `segment_001 Remotion配置`: prepare placement, snapshots, manifests, and optional check frames; do not render an MP4.
-- `segment_001 動画化してください`: render that segment and preserve its intermediate Remotion state.
-
-Use 16:9 horizontal art as the master. Derive vertical shorts by crop, pan, zoom, and fade unless a project rule says otherwise.
-
-## Completion
-
-Verify credits, manifests, final timing, segment status, image/source provenance, and reproducibility. Archive the work-specific Remotion state to the project's restore area before clearing the active Remotion entrypoint. Never delete a project or render state merely because production finished.
+Do not report an image, audio file, Remotion placement, or MP4 as complete until the corresponding operation has actually succeeded.

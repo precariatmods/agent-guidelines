@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560" role="img" aria-labelledby="title desc">
+  <title id="title">30度の直角三角形</title>
+  <desc id="desc">斜辺2、30度の向かい側1、となり側ルート3の直角三角形。sin 30度は2分の1、cos 30度はルート3分の2。</desc>
+  <rect width="800" height="560" fill="white"/>
+  <g font-family="Yu Gothic,Meiryo,sans-serif" fill="#202a35">
+    <text x="400" y="58" text-anchor="middle" font-size="31" font-weight="bold">30°の直角三角形</text>
+    <path d="M 160 430 H 600 L 600 176 Z" fill="#f2f7fc" stroke="#202a35" stroke-width="4"/>
+    <path d="M 566 430 V 396 H 600" fill="none" stroke="#526170" stroke-width="3"/>
+    <path d="M 232 430 A 72 72 0 0 1 222 394" fill="none" stroke="#7043a0" stroke-width="3"/>
+    <text x="252" y="408" fill="#7043a0" font-size="27">30°</text>
+    <text x="380" y="465" text-anchor="middle" fill="#bc5715" font-size="29">となり側　√3</text>
+    <text x="636" y="311" fill="#1768ac" font-size="29">向かい側　1</text>
+    <text x="342" y="278" transform="rotate(-30 342 278)" fill="#202a35" font-size="29">斜辺　2</text>
+    <text x="400" y="520" text-anchor="middle" font-size="27">sin 30° = 向かい側 ÷ 斜辺 = 1/2　　cos 30° = となり側 ÷ 斜辺 = √3/2</text>
+  </g>
+</svg>

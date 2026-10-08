@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="560" viewBox="0 0 800 560" role="img" aria-labelledby="title desc">
+  <title id="title">45度の直角三角形</title>
+  <desc id="desc">二辺がともに1、斜辺がルート2の直角二等辺三角形。sin 45度とcos 45度はいずれもルート2分の1。</desc>
+  <rect width="800" height="560" fill="white"/>
+  <g font-family="Yu Gothic,Meiryo,sans-serif" fill="#202a35">
+    <text x="400" y="58" text-anchor="middle" font-size="31" font-weight="bold">45°の直角三角形</text>
+    <path d="M 170 430 H 450 L 450 150 Z" fill="#f2f7fc" stroke="#202a35" stroke-width="4"/>
+    <path d="M 416 430 V 396 H 450" fill="none" stroke="#526170" stroke-width="3"/>
+    <path d="M 242 430 A 72 72 0 0 1 221 379" fill="none" stroke="#7043a0" stroke-width="3"/>
+    <text x="255" y="393" fill="#7043a0" font-size="27">45°</text>
+    <text x="310" y="465" text-anchor="middle" fill="#bc5715" font-size="29">となり側　1</text>
+    <text x="486" y="300" fill="#1768ac" font-size="29">向かい側　1</text>
+    <text x="297" y="270" transform="rotate(-45 297 270)" fill="#202a35" font-size="29">斜辺　√2</text>
+    <text x="400" y="520" text-anchor="middle" font-size="27">sin 45° = 1/√2 = √2/2　　cos 45° = 1/√2 = √2/2</text>
+  </g>
+</svg>
