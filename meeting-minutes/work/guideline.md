@@ -5,7 +5,7 @@
 ## 基本方針
 
 - 全文文字起こしは必ず`work/`へ残す。
-- 最終成果物は`header.csv`、`minutes.csv`、`participants.csv`、`Agenda.csv`と、テンプレートを無変更コピーした`meeting.xlsx`とする。
+- 4 CSVは`work/final/`に置く内部データとし、最終成果物は`output/meeting.xlsx`だけとする。
 - 最終CSVの列名・列順は`template/`の同名CSVを正本とする。
 - 声や発言内容だけで人物を確定しない。
 - 決定していない内容を決定事項にしない。
@@ -43,7 +43,7 @@
 - `minutes.csv`の話者IDと発言者が話者確認結果に一致する。
 - `Agenda.csv`の決定事項に推測が含まれていない。
 - 4 CSVはUTF-8（BOM付き）、CRLFで保存されている。
-- `output/meeting.xlsx`は`template/meeting.xlsx`と同一である。
-- `output/`に`meeting.xlsx`と4 CSVがある。
-- Excelの生成・内部編集・接続先変更を行っていない。
-- Excel処理用の追加パッケージを要求しない。
+- `output/meeting.xlsx`に4 CSVの確認済みデータが値として書き込まれている。
+- `output/`には`meeting.xlsx`だけがある。
+- Excelに外部接続、Power Query、マクロ、表示用数式がない。
+- Excelを開いた時点で完成内容が表示され、「すべて更新」を必要としない。
