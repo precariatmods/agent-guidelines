@@ -2,6 +2,10 @@
 
 このファイルを出力先と成果物一覧の正本とします。相対パスは`meeting-minutes/`基準です。
 
+- Output ID：`meeting-minutes-final`
+- 必須成果物：`output/meeting.xlsx`
+- Git公開：実データ入り成果物は原則不可。個人情報・機密情報を除去したサンプルだけ可。
+
 ## 保存先
 
 | 用途 | 保存先 |
