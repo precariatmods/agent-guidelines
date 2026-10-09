@@ -24,7 +24,6 @@ CANDIDATE_COLUMNS = [
     "total_seconds",
     "sample_text",
 ]
-DEFAULT_CACHE_DIR = Path(__file__).resolve().parents[1] / ".cache" / "pyannote"
 
 
 @dataclass(frozen=True)
@@ -37,7 +36,7 @@ class SpeakerTurn:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "pyannote.audioで話者を分離し、文字起こしの話者IDを"
+            "公開ONNXモデルで声の特徴を分類し、文字起こしの話者IDを"
             "人物マスターのIDへ確認付きで紐付けます。"
         )
     )
@@ -63,26 +62,14 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="話者ごとに人物IDを対話入力する",
     )
+    parser.add_argument("--speaker-model", type=Path, required=True, help="話者特徴抽出ONNXモデル")
     parser.add_argument(
-        "--pipeline",
-        default="pyannote/speaker-diarization-community-1",
-        help="pyannoteパイプライン名またはローカルパス",
+        "--cluster-threshold",
+        type=float,
+        default=0.65,
+        help="同一話者とみなすコサイン類似度（既定: 0.65）",
     )
-    parser.add_argument(
-        "--hf-token-env",
-        default="HF_TOKEN",
-        help="Hugging Faceトークンを読む環境変数名（既定: HF_TOKEN）",
-    )
-    parser.add_argument(
-        "--cache-dir",
-        type=Path,
-        default=DEFAULT_CACHE_DIR,
-        help="モデルキャッシュの保存先（既定: meeting-minutes/.cache/pyannote）",
-    )
-    parser.add_argument("--device", default="cpu", help="cpuまたはcuda（既定: cpu）")
-    speaker_count = parser.add_mutually_exclusive_group()
-    speaker_count.add_argument("--num-speakers", type=int, help="話者数を固定する")
-    speaker_count.add_argument("--speaker-range", nargs=2, type=int, metavar=("MIN", "MAX"))
+    parser.add_argument("--num-speakers", type=int, help="話者数を固定する")
     parser.add_argument("--force", action="store_true", help="既存の出力を上書きする")
     return parser.parse_args()
 
@@ -170,64 +157,138 @@ def read_mapping(path: Path | None) -> dict[str, str]:
     return mapping
 
 
-def run_diarization(args: argparse.Namespace) -> list[SpeakerTurn]:
+def load_audio(path: Path, sample_rate: int = 16_000):
     try:
-        import torch
-        from pyannote.audio import Pipeline
+        import av
+        import numpy as np
     except ImportError as exc:
         raise RuntimeError(
-            "pyannote.audioが見つかりません。"
+            "音声読み込みに必要なパッケージが見つかりません。"
+            "`python -m pip install -r scripts/requirements.txt`を実行してください。"
+        ) from exc
+    chunks = []
+    with av.open(str(path)) as container:
+        stream = next((item for item in container.streams if item.type == "audio"), None)
+        if stream is None:
+            raise RuntimeError("音声ストリームが見つかりませんでした。")
+        resampler = av.AudioResampler(format="fltp", layout="mono", rate=sample_rate)
+        for frame in container.decode(stream):
+            for converted in resampler.resample(frame):
+                chunks.append(converted.to_ndarray().reshape(-1).astype("float32"))
+        for converted in resampler.resample(None):
+            chunks.append(converted.to_ndarray().reshape(-1).astype("float32"))
+    if not chunks:
+        raise RuntimeError("音声データを読み込めませんでした。")
+    return np.ascontiguousarray(np.concatenate(chunks)), sample_rate
+
+
+def cluster_embeddings(embeddings, num_speakers: int | None, threshold: float):
+    import numpy as np
+
+    matrix = np.asarray(embeddings, dtype="float32")
+    matrix /= np.maximum(np.linalg.norm(matrix, axis=1, keepdims=True), 1e-8)
+    if num_speakers:
+        count = min(num_speakers, len(matrix))
+        seeds = [0]
+        while len(seeds) < count:
+            similarities = matrix @ matrix[seeds].T
+            seeds.append(int(np.argmin(np.max(similarities, axis=1))))
+        centroids = matrix[seeds].copy()
+        labels = np.full(len(matrix), -1, dtype=int)
+        for _ in range(20):
+            updated = np.argmax(matrix @ centroids.T, axis=1)
+            if np.array_equal(labels, updated):
+                break
+            labels = updated
+            for index in range(count):
+                members = matrix[labels == index]
+                if len(members):
+                    centroid = members.mean(axis=0)
+                    centroids[index] = centroid / max(np.linalg.norm(centroid), 1e-8)
+        return labels.tolist()
+
+    centroids = []
+    counts = []
+    labels = []
+    for embedding in matrix:
+        if not centroids:
+            centroids.append(embedding.copy())
+            counts.append(1)
+            labels.append(0)
+            continue
+        similarities = np.asarray(centroids) @ embedding
+        best = int(np.argmax(similarities))
+        if float(similarities[best]) < threshold:
+            centroids.append(embedding.copy())
+            counts.append(1)
+            labels.append(len(centroids) - 1)
+            continue
+        counts[best] += 1
+        centroid = centroids[best] + (embedding - centroids[best]) / counts[best]
+        centroids[best] = centroid / max(np.linalg.norm(centroid), 1e-8)
+        labels.append(best)
+    return labels
+
+
+def run_diarization(
+    args: argparse.Namespace,
+    transcript: list[dict[str, str]],
+) -> list[SpeakerTurn]:
+    try:
+        import numpy as np
+        import sherpa_onnx
+    except ImportError as exc:
+        raise RuntimeError(
+            "sherpa-onnxが見つかりません。"
             "`python -m pip install -r scripts/requirements.txt`を実行してください。"
         ) from exc
 
-    token = os.environ.get(args.hf_token_env)
-    pipeline_kwargs: dict[str, object] = {"token": token}
-    if args.cache_dir:
-        pipeline_kwargs["cache_dir"] = str(args.cache_dir.resolve())
-
-    print(f"話者分離モデル: {args.pipeline}", file=sys.stderr)
-    try:
-        pipeline = Pipeline.from_pretrained(args.pipeline, **pipeline_kwargs)
-    except Exception as exc:
-        if not token:
-            raise RuntimeError(
-                "話者分離モデルを利用できません。Hugging Faceでモデルの"
-                "利用条件に同意し、HF_TOKENを環境変数へ設定してください。"
-            ) from exc
-        raise RuntimeError(
-            "話者分離モデルを読み込めません。モデルの利用許諾、HF_TOKEN、"
-            "ネットワーク接続を確認してください。"
-        ) from exc
-    if pipeline is None:
-        raise RuntimeError(
-            "話者分離モデルを読み込めません。モデルの利用許諾と"
-            f"環境変数{args.hf_token_env}を確認してください。"
+    if not args.speaker_model.is_file():
+        raise RuntimeError(f"話者特徴モデルが見つかりません: {args.speaker_model}")
+    config = sherpa_onnx.SpeakerEmbeddingExtractorConfig(
+        model=str(args.speaker_model), num_threads=2, provider="cpu"
+    )
+    if not config.validate():
+        raise RuntimeError(f"話者特徴モデルの設定が不正です: {args.speaker_model}")
+    extractor = sherpa_onnx.SpeakerEmbeddingExtractor(config)
+    audio, sample_rate = load_audio(args.audio)
+    embeddings = []
+    valid_rows = []
+    for index, row in enumerate(transcript):
+        start = parse_timestamp(row["start_time"])
+        end = parse_timestamp(row["end_time"])
+        if end - start < 1.0:
+            center = (start + end) / 2
+            start = max(0.0, center - 0.5)
+            end = min(len(audio) / sample_rate, center + 0.5)
+        samples = np.ascontiguousarray(
+            audio[int(start * sample_rate) : int(end * sample_rate)],
+            dtype="float32",
         )
-    pipeline.to(torch.device(args.device))
+        stream = extractor.create_stream()
+        stream.accept_waveform(sample_rate=sample_rate, waveform=samples)
+        stream.input_finished()
+        if not extractor.is_ready(stream):
+            continue
+        embeddings.append(np.asarray(extractor.compute(stream), dtype="float32"))
+        valid_rows.append(index)
+    if not embeddings:
+        raise RuntimeError("声の特徴を抽出できる発言区間がありませんでした。")
 
-    inference_kwargs: dict[str, int] = {}
-    if args.num_speakers is not None:
-        inference_kwargs["num_speakers"] = args.num_speakers
-    elif args.speaker_range:
-        inference_kwargs["min_speakers"] = args.speaker_range[0]
-        inference_kwargs["max_speakers"] = args.speaker_range[1]
-
-    result = pipeline(str(args.audio), **inference_kwargs)
-    annotation = getattr(result, "exclusive_speaker_diarization", None)
-    if annotation is None:
-        annotation = getattr(result, "speaker_diarization", None)
-    if annotation is None:
-        annotation = result
-
-    turns = [
-        SpeakerTurn(float(segment.start), float(segment.end), str(label))
-        for segment, _, label in annotation.itertracks(yield_label=True)
-        if float(segment.end) > float(segment.start)
+    cluster_ids = cluster_embeddings(
+        embeddings, args.num_speakers, args.cluster_threshold
+    )
+    row_labels = ["UNASSIGNED"] * len(transcript)
+    for row_index, cluster_id in zip(valid_rows, cluster_ids, strict=True):
+        row_labels[row_index] = f"voice_{cluster_id:03d}"
+    return [
+        SpeakerTurn(
+            parse_timestamp(row["start_time"]),
+            parse_timestamp(row["end_time"]),
+            label,
+        )
+        for row, label in zip(transcript, row_labels, strict=True)
     ]
-    turns.sort(key=lambda turn: (turn.start, turn.end, turn.label))
-    if not turns:
-        raise RuntimeError("音声から話者区間を検出できませんでした。")
-    return turns
 
 
 def ordered_labels(turns: Iterable[SpeakerTurn]) -> list[str]:
@@ -353,8 +414,7 @@ def validate_args(args: argparse.Namespace) -> None:
     )
     if args.mapping:
         args.mapping = args.mapping.resolve()
-    if args.cache_dir:
-        args.cache_dir = args.cache_dir.resolve()
+    args.speaker_model = args.speaker_model.resolve()
 
     for path, label in (
         (args.audio, "音声"),
@@ -371,10 +431,8 @@ def validate_args(args: argparse.Namespace) -> None:
         raise ValueError("文字起こしと話者候補CSVは別パスにしてください。")
     if args.num_speakers is not None and args.num_speakers < 1:
         raise ValueError("--num-speakersは1以上にしてください。")
-    if args.speaker_range:
-        minimum, maximum = args.speaker_range
-        if minimum < 1 or maximum < minimum:
-            raise ValueError("--speaker-rangeは1以上でMIN <= MAXにしてください。")
+    if not 0.0 < args.cluster_threshold <= 1.0:
+        raise ValueError("--cluster-thresholdは0より大きく1以下にしてください。")
     for path in (args.output, args.candidates_output):
         if path.exists() and not args.force:
             raise FileExistsError(
@@ -386,7 +444,7 @@ def validate_args(args: argparse.Namespace) -> None:
 def process(args: argparse.Namespace) -> tuple[int, int]:
     transcript = read_transcript(args.transcript)
     people = read_people(args.person_master)
-    turns = run_diarization(args)
+    turns = run_diarization(args, transcript)
     labels = ordered_labels(turns)
 
     unassigned_label = "UNASSIGNED"

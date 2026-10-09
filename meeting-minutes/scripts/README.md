@@ -9,14 +9,12 @@
 ```powershell
 cd meeting-minutes
 .\setup.ps1
-Copy-Item .env.example .env
-# .envのHF_TOKENを設定
 .\run.ps1 -Audio "input\meeting_voice.mp3"
 ```
 
-新規構築時は`.venv/`へ依存関係を導入し、モデルとpipのキャッシュは`.cache/`へ保存します。トークンを含む`.env`はGit管理しません。
+新規構築時は`.venv/`へ依存関係を導入し、Whisperと話者特徴ONNXモデルは`.cache/`へ保存します。アカウントやアクセストークンは不要です。
 
-`setup.ps1`は既存のPythonコンポーネントを確認します。利用可能ならそのまま使用し、不足時だけ最大約6GBの容量警告とインストール確認を表示します。`run.ps1`は初回設定がない場合だけ`setup.ps1`を呼びます。
+`setup.ps1`は既存のPythonコンポーネントを確認します。利用可能ならそのまま使用し、不足時だけ最大約2GBの容量警告とインストール確認を表示します。`run.ps1`は依存関係または公開ONNXモデルが不足する場合だけ`setup.ps1`を呼びます。
 
 ## 入力
 
@@ -70,7 +68,7 @@ Copy-Item .env.example .env
 ## 注意事項
 
 - 初回は`setup.ps1`が`requirements.txt`の依存関係を`.venv/`へ導入します。
-- pyannoteのモデルが利用許諾とHugging Faceトークンを要求する場合があります。
+- 話者分類は公開3D-Speaker ONNXモデルを使用し、人物名は自動特定しません。
 - 声だけから人物を確定しません。
 - 人物マスターはUTF-8またはCP932で読み込めます。
 - 既存ファイルを上書きする場合だけ`--force`を指定します。

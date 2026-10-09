@@ -12,7 +12,23 @@ $ErrorActionPreference = "Stop"
 . (Join-Path $PSScriptRoot "environment.ps1")
 
 $pythonPathFile = Join-Path $PSScriptRoot ".python-path"
-if (-not (Test-Path -LiteralPath $pythonPathFile -PathType Leaf)) {
+$componentChecker = Join-Path $PSScriptRoot "scripts\check_python_components.py"
+$speakerModel = Join-Path $env:SPEAKER_MODEL_DIR "3dspeaker_speech_campplus_sv_zh-cn_16k-common.onnx"
+$needsSetup = -not (Test-Path -LiteralPath $pythonPathFile -PathType Leaf)
+if (-not $needsSetup) {
+    $candidatePython = (Get-Content -LiteralPath $pythonPathFile -Raw).Trim()
+    if (-not (Test-Path -LiteralPath $candidatePython -PathType Leaf)) {
+        $needsSetup = $true
+    }
+    elseif (-not (Test-Path -LiteralPath $speakerModel -PathType Leaf)) {
+        $needsSetup = $true
+    }
+    else {
+        & $candidatePython $componentChecker
+        $needsSetup = $LASTEXITCODE -ne 0
+    }
+}
+if ($needsSetup) {
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot "setup.ps1")
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }

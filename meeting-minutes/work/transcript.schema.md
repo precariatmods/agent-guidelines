@@ -39,7 +39,7 @@ line_id,speaker_id,start_time,end_time,text
 - 同じ人物には、ファイル全体を通じて同じ `speaker_id` を使用する。
 - 音声から氏名を取得できた場合は`work/master/person.csv`と照合し、候補の氏名・部署をチャットで利用者へ提示する。
 - 利用者が人物を確認した後、その話者の`speaker_id`を`person:<ID>`へ置き換える。例えば人物マスターの`ID`が`4`なら`person:4`とする。
-- pyannote.audioの話者ラベルと仮話者ID・人物IDの対応は`speaker_candidates.csv`へ保存する。
+- 声の特徴クラスタと仮話者ID・人物IDの対応は`speaker_candidates.csv`へ保存する。
 - 一つの文字起こし区間に複数話者が含まれる場合は、時刻の重なりが最大の話者を暫定割り当てし、音声で確認する。
 - 人物を確認できない場合は、仮IDのまま保持する。
 - 発話が重なった場合は話者ごとに行を分け、対応する時刻をそれぞれ記録する。

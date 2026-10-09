@@ -1,6 +1,6 @@
 # speaker_candidates.csv schema
 
-pyannote.audioが検出した話者と、利用者が確認した人物マスターの対応を保存します。声だけを根拠に人物を自動確定しません。
+sherpa-onnxで分類した仮話者と、利用者が確認した人物マスターの対応を保存します。声だけを根拠に人物を自動確定しません。
 
 ## ファイル仕様
 
@@ -17,7 +17,7 @@ pyannote.audioが検出した話者と、利用者が確認した人物マスタ
 
 | 列名 | 必須 | 定義 |
 |---|---:|---|
-| `diarization_speaker_id` | 必須 | pyannote.audioが付けた話者ラベル。例：`SPEAKER_00` |
+| `diarization_speaker_id` | 必須 | 声の特徴クラスタへ付けた内部ラベル。例：`voice_000` |
 | `speaker_id` | 必須 | 未確認時は`speaker_001`形式、確認後は`person:<ID>` |
 | `person_id` | 任意 | 利用者が`work/master/person.csv`から確認した人物ID |
 | `name` | 任意 | 確認済み人物の氏名 |

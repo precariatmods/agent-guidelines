@@ -11,10 +11,8 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CACHE_ROOT = PROJECT_ROOT / ".cache"
-os.environ.setdefault("HF_HOME", str(CACHE_ROOT / "huggingface"))
-os.environ.setdefault("TORCH_HOME", str(CACHE_ROOT / "torch"))
 os.environ.setdefault("WHISPER_MODEL_DIR", str(CACHE_ROOT / "whisper"))
-os.environ.setdefault("PYANNOTE_CACHE_DIR", str(CACHE_ROOT / "pyannote"))
+os.environ.setdefault("SPEAKER_MODEL_DIR", str(CACHE_ROOT / "speaker-models"))
 
 import check_python_components
 import link_speakers
@@ -22,7 +20,7 @@ import transcribe_audio
 
 
 DEFAULT_WHISPER_MODEL = "small"
-DEFAULT_DIARIZATION_PIPELINE = "pyannote/speaker-diarization-community-1"
+DEFAULT_SPEAKER_MODEL = "3dspeaker_speech_campplus_sv_zh-cn_16k-common.onnx"
 
 
 def parse_args() -> argparse.Namespace:
@@ -140,18 +138,12 @@ def run_speaker_linking(
         candidates_output=paths["candidates"],
         mapping=mapping,
         interactive=interactive,
-        pipeline=os.environ.get(
-            "PYANNOTE_PIPELINE", DEFAULT_DIARIZATION_PIPELINE
+        speaker_model=(
+            Path(os.environ.get("SPEAKER_MODEL_DIR", CACHE_ROOT / "speaker-models"))
+            / DEFAULT_SPEAKER_MODEL
         ),
-        hf_token_env="HF_TOKEN",
-        cache_dir=(
-            Path(os.environ["PYANNOTE_CACHE_DIR"])
-            if os.environ.get("PYANNOTE_CACHE_DIR")
-            else None
-        ),
-        device="cpu",
+        cluster_threshold=0.65,
         num_speakers=args.num_speakers,
-        speaker_range=None,
         force=args.force,
     )
     link_speakers.validate_args(linking_args)
