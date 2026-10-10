@@ -5,11 +5,11 @@ description: Create a simple literary kamishibai video from a supplied story usi
 
 # Literary Kamishibai
 
-Read [POLICY.md](POLICY.md) first and follow it as the source of truth for production decisions and constraints.
+Read [POLICY.md](POLICY.md) and [Output.md](Output.md) first. Follow Policy as the source of truth for production decisions and Output as the source of truth for artifacts, destinations, completion criteria, and Git publication.
 
 ## Workflow
 
-1. Identify the target `project/<project_id>/`. If it already contains work, do not overwrite it without the user's direction.
+1. Identify the target project described by the artifact IDs in `Output.md`. Resolve and report its absolute output paths before writing. If it already contains work, do not overwrite it without the user's direction.
 2. Run the environment check from the production root:
 
    ```powershell
@@ -54,17 +54,6 @@ Read [POLICY.md](POLICY.md) first and follow it as the source of truth for produ
 
 ## Sources of truth
 
-Inputs:
-
-- `dialogue.json`
-- `voicevox_characters.csv`
-- `image_order/`
-- `images/`
-
-Generated artifacts:
-
-- `audio/*.wav`
-- `render_data.json`
-- `output/video.mp4`
+Input definitions, generated artifacts, destinations, and completion criteria are defined only in `Output.md`.
 
 Do not report an image, audio file, Remotion placement, or MP4 as complete until the corresponding operation has actually succeeded.

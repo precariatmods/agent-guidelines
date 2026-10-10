@@ -8,6 +8,7 @@
 
 - [POLICY.md](POLICY.md)：制作方針、判断基準、制約の正本
 - [SKILL.md](SKILL.md)：Policyに従い、使用するファイル、プログラム、処理順を定める実行手順の正本
+- [Output.md](Output.md)：成果物、保存先、完成条件、Git公開可否の正本
 
 ```text
 POLICY.md
@@ -44,6 +45,7 @@ Remotionがない場合だけ、初回導入用の絶対パスとコマンドが
 literary-kamishibai/
 ├─ POLICY.md
 ├─ SKILL.md
+├─ Output.md
 ├─ README.md
 ├─ scripts/                 共通Pythonプログラム
 ├─ remotion/                全シナリオ共通のRemotion環境

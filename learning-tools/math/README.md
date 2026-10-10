@@ -7,7 +7,6 @@
 math/
 ├─ function_proportional/             比例：針金の長さと重さ
 ├─ function_proportional_inversely/   反比例：一定の道のりを進む速さと時間
-├─ function_logarithm/               対数と巨大な数（生徒用PDF・教師用方針）
 └─ function_trigonometric/           三角関数：sin・cosの方程式と最大・最小（設計案）
 ```
 
